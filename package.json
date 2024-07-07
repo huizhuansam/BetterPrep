@@ -4,6 +4,7 @@
   "description": "Frontend application for BetterPrep",
   "main": "index.js",
   "scripts": {
+    "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "dev": "vite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
