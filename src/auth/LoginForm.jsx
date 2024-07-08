@@ -2,6 +2,7 @@ import { Box, Button, Card, Stack, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
+import { Link as RouterLink } from "react-router-dom";
 
 const LoginForm = () => {
   return (
@@ -25,7 +26,13 @@ const LoginForm = () => {
             <Link href="#" variant="body2" underline="none">
               forgot password
             </Link>
-            <Link href="#" variant="body2" underline="none">
+            <Link
+              // modifies MUI Link to use react-router Link API
+              component={RouterLink}
+              to="/signup"
+              variant="body2"
+              underline="none"
+            >
               sign up
             </Link>
           </Stack>
