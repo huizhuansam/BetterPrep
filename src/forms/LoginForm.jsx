@@ -12,11 +12,15 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import validator from "validator";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const isFormCompleted =
+    !validator.isEmpty(username) && !validator.isEmpty(password);
 
   const handleInputUsername = (e) => {
     setUsername(e.target.value);
@@ -64,10 +68,11 @@ const LoginForm = () => {
           onChange={handleInputPassword}
         />
         <Button
-          variant="contained"
           fullWidth
           disableElevation
           disableRipple
+          variant="contained"
+          disabled={!isFormCompleted}
           onClick={handleLogin}
         >
           Continue
