@@ -1,10 +1,9 @@
-import { Box, Container, Stack, Divider } from "@mui/material";
+import { Box, Container, Divider, Stack } from "@mui/material";
+import { Outlet } from "react-router-dom";
 
 import LogoBlink from "./LogoBlink";
-import LoginForm from "./LoginForm";
-import SignupForm from "./SignupForm";
 
-const AuthPage = ({ isLogin }) => {
+const AuthLayout = () => {
   return (
     <Box disableGutters alignItems="center">
       <Container maxWidth="false" disableGutters height="100vh">
@@ -16,11 +15,11 @@ const AuthPage = ({ isLogin }) => {
           divider={<Divider orientation="vertical" flexItem variant="middle" />}
         >
           <LogoBlink />
-          {isLogin ? <LoginForm /> : <SignupForm />}
+          <Outlet />
         </Stack>
       </Container>
     </Box>
   );
 };
 
-export default AuthPage;
+export default AuthLayout;
