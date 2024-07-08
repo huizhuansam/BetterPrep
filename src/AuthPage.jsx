@@ -1,9 +1,10 @@
 import { Box, Container, Stack, Divider } from "@mui/material";
 
-import LoginForm from "./LoginForm";
 import LogoBlink from "./LogoBlink";
+import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
 
-const LoginPage = () => {
+const AuthPage = ({ isLogin }) => {
   return (
     <Box disableGutters alignItems="center">
       <Container maxWidth="false" disableGutters height="100vh">
@@ -15,11 +16,11 @@ const LoginPage = () => {
           divider={<Divider orientation="vertical" flexItem variant="middle" />}
         >
           <LogoBlink />
-          <LoginForm />
+          {isLogin ? <LoginForm /> : <SignupForm />}
         </Stack>
       </Container>
     </Box>
   );
 };
 
-export default LoginPage;
+export default AuthPage;

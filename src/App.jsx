@@ -8,8 +8,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LoginPage from "./LoginPage";
-import SignupPage from "./SignupPage";
+import AuthPage from "./AuthPage";
 
 const App = () => {
   return (
@@ -17,8 +16,8 @@ const App = () => {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<AuthPage isLogin={true} />} />
+          <Route path="/signup" element={<AuthPage isLogin={false} />} />
         </Routes>
       </BrowserRouter>
     </>
