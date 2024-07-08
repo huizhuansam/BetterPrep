@@ -1,21 +1,138 @@
-import { Button, Card, Stack, Typography } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Button,
+  Card,
+  IconButton,
+  InputAdornment,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
+import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import validator from "validator";
 
 const SignupForm = () => {
+  const [emailAddress, setEmailAddress] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isFormCompleted =
+    !validator.isEmpty(emailAddress) &&
+    !validator.isEmpty(username) &&
+    !validator.isEmpty(password) &&
+    !validator.isEmpty(confirmPassword);
+  const isUsernameValid =
+    validator.isLength(username, { min: 1 }) &&
+    validator.isAlphanumeric(username);
+  const isPasswordsMatch = password === confirmPassword;
+  const isPasswordValid = validator.isStrongPassword(password);
+  const isEmailValid = validator.isEmail(emailAddress);
+  const isFormInputValid =
+    isFormCompleted &&
+    isPasswordsMatch &&
+    isPasswordValid &&
+    isEmailValid &&
+    isUsernameValid;
+
+  const handleInputEmailAddress = (e) => {
+    setEmailAddress(e.target.value);
+  };
+
+  const handleInputUsername = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handleInputPassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleInputConfirmPassword = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((isShow) => !isShow);
+  };
+
+  const handleSignUp = () => {
+    if (!isFormCompleted) {
+      return;
+    }
+    const credentials = { emailAddress, username, password };
+    console.log(credentials);
+  };
+
   return (
     <Card sx={{ padding: 2 }} variant="outlined">
-      <Stack spacing={2} alignItems="center" justifyContent="center">
-        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+      <Stack spacing={1} alignItems="center" justifyContent="center">
+        <Typography variant="h5" padding={1} sx={{ fontWeight: "bold" }}>
           Sign Up
         </Typography>
-        <TextField label="email address" size="small" />
-        <TextField label="username" size="small" />
-        <TextField label="password" size="small" />
-        <TextField label="re-type password" size="small" />
-        <Button variant="contained" fullWidth disableElevation disableRipple>
+        <TextField
+          fullWidth
+          label="email address"
+          size="small"
+          error={!isEmailValid}
+          helperText={isEmailValid ? " " : "invalid email address"}
+          onChange={handleInputEmailAddress}
+        />
+        <TextField
+          fullWidth
+          label="username"
+          size="small"
+          error={!isUsernameValid}
+          helperText={isUsernameValid ? " " : "username must be alphanumeric"}
+          onChange={handleInputUsername}
+        />
+        <TextField
+          fullWidth
+          label="password"
+          size="small"
+          error={!isPasswordValid}
+          helperText={isPasswordValid ? " " : "weak password"}
+          type={showPassword ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton edge="end" onClick={togglePasswordVisibility}>
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          onChange={handleInputPassword}
+        />
+        <TextField
+          fullWidth
+          label="re-type password"
+          size="small"
+          type={showPassword ? "text" : "password"}
+          onChange={handleInputConfirmPassword}
+          error={!isPasswordsMatch}
+          helperText={isPasswordsMatch ? " " : "passwords do not match"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton edge="end" onClick={togglePasswordVisibility}>
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          fullWidth
+          disableElevation
+          disableRipple
+          variant="contained"
+          disabled={!isFormInputValid}
+          onClick={handleSignUp}
+        >
           Continue
         </Button>
         <Divider flexItem />
