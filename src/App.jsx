@@ -8,19 +8,22 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import AuthLayout from "./auth/AuthLayout";
-import LoginForm from "./auth/LoginForm";
-import SignupForm from "./auth/SignupForm";
+import AuthLayout from "./layouts/AuthLayout";
+import LoginForm from "./forms/LoginForm";
+import SignupForm from "./forms/SignupForm";
+import BaseLayout from "./layouts/BaseLayout";
 
 const App = () => {
   return (
     <>
-      <CssBaseline />
+      <CssBaseline /> {/* removes scrollbar and weird margin around page */}
       <BrowserRouter>
         <Routes>
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/signup" element={<SignupForm />} />
+          <Route element={<BaseLayout />}>
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/signup" element={<SignupForm />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -5,7 +5,7 @@ import LogoBlink from "../assets/LogoBlink";
 
 const AuthLayout = () => {
   return (
-    <Container maxWidth="xl" disableGutters height="100vh">
+    <Container height="100vh" maxWidth="xl">
       <Stack
         justifyContent="space-evenly"
         alignItems="center"
