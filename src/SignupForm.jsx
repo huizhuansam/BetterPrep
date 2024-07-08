@@ -27,7 +27,7 @@ const SignupForm = () => {
             <Link href="#" variant="body2" underline="none">
               forgot password
             </Link>
-            <Link href="#" variant="body2" underline="none">
+            <Link href="/login" variant="body2" underline="none">
               log in
             </Link>
           </Stack>
