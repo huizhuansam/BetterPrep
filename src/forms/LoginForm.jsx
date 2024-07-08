@@ -1,6 +1,5 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
-  Button,
   Card,
   IconButton,
   InputAdornment,
@@ -13,6 +12,8 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import validator from "validator";
+
+import BaseButton from "../buttons/BaseButton";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -67,16 +68,11 @@ const LoginForm = () => {
           }}
           onChange={handleInputPassword}
         />
-        <Button
-          fullWidth
-          disableElevation
-          disableRipple
-          variant="contained"
+        <BaseButton
+          displayText="Continue"
           disabled={!isFormCompleted}
           onClick={handleLogin}
-        >
-          Continue
-        </Button>
+        />
         <Divider flexItem />
         <Stack
           direction="row"
