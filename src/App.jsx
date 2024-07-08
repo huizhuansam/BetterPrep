@@ -9,6 +9,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
 import LogoBlink from "./LogoBlink";
 
 const App = () => {
@@ -27,7 +28,7 @@ const App = () => {
             }
           >
             <LogoBlink />
-            <LoginForm />
+            <SignupForm />
           </Stack>
         </Container>
       </Box>
