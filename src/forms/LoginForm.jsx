@@ -1,19 +1,75 @@
-import { Button, Card, Stack, Typography } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Button,
+  Card,
+  IconButton,
+  InputAdornment,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
+import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 const LoginForm = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleInputUsername = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handleInputPassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((isShow) => !isShow);
+  };
+
+  const handleLogin = () => {
+    const credentials = { username, password };
+    console.log(credentials);
+  };
+
   return (
     <Card sx={{ padding: 2 }} variant="outlined">
       <Stack spacing={2} alignItems="center" justifyContent="center">
         <Typography variant="h5" sx={{ fontWeight: "bold" }}>
           Log In
         </Typography>
-        <TextField label="username" size="small" />
-        <TextField label="password" size="small" />
-        <Button variant="contained" fullWidth disableElevation disableRipple>
+        <TextField
+          fullWidth
+          label="username"
+          size="small"
+          onChange={handleInputUsername}
+        />
+        <TextField
+          fullWidth
+          label="password"
+          type={showPassword ? "text" : "password"}
+          size="small"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton edge="end" onClick={togglePasswordVisibility}>
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          onChange={handleInputPassword}
+        />
+        <Button
+          variant="contained"
+          fullWidth
+          disableElevation
+          disableRipple
+          onClick={handleLogin}
+        >
           Continue
         </Button>
         <Divider flexItem />
