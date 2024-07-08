@@ -8,12 +8,12 @@ const LoginForm = () => {
     <Box>
       <Card sx={{ p: 2 }} variant="outlined">
         <Stack spacing={2} alignItems="center" justifyContent="center">
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
             Log In
           </Typography>
-          <TextField required label="username" />
-          <TextField required label="password" />
-          <Button variant="contained" fullWidth>
+          <TextField label="username" size="small" />
+          <TextField label="password" size="small" />
+          <Button variant="contained" fullWidth disableElevation disableRipple>
             Continue
           </Button>
           <Divider flexItem />
