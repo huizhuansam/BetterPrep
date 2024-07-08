@@ -21,9 +21,7 @@ const App = () => {
             justifyContent="space-evenly"
             alignItems="center"
             height="100vh"
-            // display="flex"
             direction="row"
-            // flexDirection="row"
             divider={
               <Divider orientation="vertical" flexItem variant="middle" />
             }
