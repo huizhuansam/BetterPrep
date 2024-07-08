@@ -8,9 +8,9 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import AuthLayout from "./AuthLayout";
-import LoginForm from "./LoginForm";
-import SignupForm from "./SignupForm";
+import AuthLayout from "./auth/AuthLayout";
+import LoginForm from "./auth/LoginForm";
+import SignupForm from "./auth/SignupForm";
 
 const App = () => {
   return (

@@ -1,7 +1,7 @@
 import { Box, Container, Divider, Stack } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
-import LogoBlink from "./LogoBlink";
+import LogoBlink from "../assets/LogoBlink";
 
 const AuthLayout = () => {
   return (
