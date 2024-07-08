@@ -1,36 +1,30 @@
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  Card,
-  IconButton,
-  InputAdornment,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import validator from "validator";
 
-import BaseButton from "../buttons/BaseButton";
+import AuthButton from "../buttons/AuthButton";
+import EmailAddressField from "../inputs/EmailAddressField";
+import PasswordField from "../inputs/PasswordField";
+import UsernameField from "../inputs/UsernameField";
 
 const SignupForm = () => {
   const [emailAddress, setEmailAddress] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [retypedPassword, setRetypedPassword] = useState("");
 
   const isFormCompleted =
     !validator.isEmpty(emailAddress) &&
     !validator.isEmpty(username) &&
     !validator.isEmpty(password) &&
-    !validator.isEmpty(confirmPassword);
+    !validator.isEmpty(retypedPassword);
   const isUsernameValid =
     validator.isLength(username, { min: 1 }) &&
     validator.isAlphanumeric(username);
-  const isPasswordsMatch = password === confirmPassword;
+  const isPasswordsMatch = password === retypedPassword;
   const isPasswordValid = validator.isStrongPassword(password);
   const isEmailValid = validator.isEmail(emailAddress);
   const isFormInputValid =
@@ -52,12 +46,8 @@ const SignupForm = () => {
     setPassword(e.target.value);
   };
 
-  const handleInputConfirmPassword = (e) => {
-    setConfirmPassword(e.target.value);
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((isShow) => !isShow);
+  const handleRetypedPassword = (e) => {
+    setRetypedPassword(e.target.value);
   };
 
   const handleSignUp = () => {
@@ -74,60 +64,34 @@ const SignupForm = () => {
         <Typography variant="h5" padding={1} sx={{ fontWeight: "bold" }}>
           Sign Up
         </Typography>
-        <TextField
-          fullWidth
-          label="email address"
-          size="small"
+        <EmailAddressField
+          helperText="invalid email address"
           error={!isEmailValid}
-          helperText={isEmailValid ? " " : "invalid email address"}
+          emailAddress={emailAddress}
           onChange={handleInputEmailAddress}
         />
-        <TextField
-          fullWidth
-          label="username"
-          size="small"
+        <UsernameField
+          helperText="username must be alphanumeric"
+          username={username}
           error={!isUsernameValid}
-          helperText={isUsernameValid ? " " : "username must be alphanumeric"}
           onChange={handleInputUsername}
         />
-        <TextField
-          fullWidth
+        <PasswordField
           label="password"
-          size="small"
+          helperText="weak password"
+          password={password}
           error={!isPasswordValid}
-          helperText={isPasswordValid ? " " : "weak password"}
-          type={showPassword ? "text" : "password"}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton edge="end" onClick={togglePasswordVisibility}>
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
           onChange={handleInputPassword}
         />
-        <TextField
-          fullWidth
+        <PasswordField
           label="re-type password"
-          size="small"
-          type={showPassword ? "text" : "password"}
-          onChange={handleInputConfirmPassword}
+          helperText="passwords do not match"
+          password={retypedPassword}
           error={!isPasswordsMatch}
-          helperText={isPasswordsMatch ? " " : "passwords do not match"}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton edge="end" onClick={togglePasswordVisibility}>
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+          onChange={handleRetypedPassword}
         />
-        <BaseButton
-          displayText="Continue"
+        <AuthButton
+          displayText="create account"
           disabled={!isFormInputValid}
           onClick={handleSignUp}
         />

@@ -1,24 +1,17 @@
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  Card,
-  IconButton,
-  InputAdornment,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import validator from "validator";
 
-import BaseButton from "../buttons/BaseButton";
+import AuthButton from "../buttons/AuthButton";
+import PasswordField from "../inputs/PasswordField";
+import UsernameField from "../inputs/UsernameField";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
   const isFormCompleted =
     !validator.isEmpty(username) && !validator.isEmpty(password);
@@ -29,10 +22,6 @@ const LoginForm = () => {
 
   const handleInputPassword = (e) => {
     setPassword(e.target.value);
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((isShow) => !isShow);
   };
 
   const handleLogin = () => {
@@ -46,30 +35,14 @@ const LoginForm = () => {
         <Typography variant="h5" sx={{ fontWeight: "bold" }}>
           Log In
         </Typography>
-        <TextField
-          fullWidth
-          label="username"
-          size="small"
-          onChange={handleInputUsername}
-        />
-        <TextField
-          fullWidth
+        <UsernameField username={username} onChange={handleInputUsername} />
+        <PasswordField
           label="password"
-          type={showPassword ? "text" : "password"}
-          size="small"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton edge="end" onClick={togglePasswordVisibility}>
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+          password={password}
           onChange={handleInputPassword}
         />
-        <BaseButton
-          displayText="Continue"
+        <AuthButton
+          displayText="continue"
           disabled={!isFormCompleted}
           onClick={handleLogin}
         />

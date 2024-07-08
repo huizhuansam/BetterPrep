@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 
-const BaseButton = ({ displayText, disabled, onClick }) => {
+const AuthButton = ({ displayText, disabled, onClick }) => {
   return (
     <Button
       fullWidth
@@ -15,4 +15,4 @@ const BaseButton = ({ displayText, disabled, onClick }) => {
   );
 };
 
-export default BaseButton;
+export default AuthButton;
