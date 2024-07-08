@@ -3,35 +3,24 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import { Box, Container, CssBaseline, Stack } from "@mui/material";
-import Divider from "@mui/material/Divider";
+import { CssBaseline } from "@mui/material";
 import React from "react";
 import { createRoot } from "react-dom/client";
 
-import LoginForm from "./LoginForm";
-import SignupForm from "./SignupForm";
-import LogoBlink from "./LogoBlink";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import LoginPage from "./LoginPage";
+import SignupPage from "./SignupPage";
 
 const App = () => {
   return (
     <>
       <CssBaseline />
-      <Box disableGutters alignItems="center">
-        <Container maxWidth="false" disableGutters height="100vh">
-          <Stack
-            justifyContent="space-evenly"
-            alignItems="center"
-            height="100vh"
-            direction="row"
-            divider={
-              <Divider orientation="vertical" flexItem variant="middle" />
-            }
-          >
-            <LogoBlink />
-            <SignupForm />
-          </Stack>
-        </Container>
-      </Box>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 };
