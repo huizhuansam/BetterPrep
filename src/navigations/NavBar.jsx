@@ -24,7 +24,16 @@ const NavBar = () => {
             spacing={2}
             sx={{ flexGrow: 1, justifyContent: "center" }}
           >
-            <Button startIcon={<ListIcon />}>Question List</Button>
+            <Button
+              startIcon={<ListIcon />}
+              disableElevation
+              disableRipple
+              component={RouterLink}
+              // todo: link correct route
+              to="#"
+            >
+              Question List
+            </Button>
             <Button
               startIcon={<Create />}
               disableElevation
