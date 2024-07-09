@@ -1,7 +1,10 @@
-import { AppBar, Toolbar, Box, Container } from "@mui/material";
-import LogoStatic from "../assets/LogoStatic";
+import { Create } from "@mui/icons-material";
+import ListIcon from "@mui/icons-material/List";
 import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Box, Button, Container, Stack, Toolbar } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+import { Link as RouterLink } from "react-router-dom";
+import LogoStatic from "../assets/LogoStatic";
 
 const NavBar = () => {
   return (
@@ -12,13 +15,30 @@ const NavBar = () => {
       color="transparent"
     >
       <Container maxWidth="lg" disableGutters>
-        <Toolbar variant="dense">
-          <LogoStatic />
-          <Box sx={{ flexGrow: 1 }} />
-          <IconButton size="large" edge="end" color="inherit" sx={{ mr: 2 }}>
+        <Toolbar variant="dense" sx={{ justifyContent: "space-between" }}>
+          <Box sx={{ ml: "auto" }}>
+            <LogoStatic />
+          </Box>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ flexGrow: 1, justifyContent: "center" }}
+          >
+            <Button startIcon={<ListIcon />}>Question List</Button>
+            <Button
+              startIcon={<Create />}
+              disableElevation
+              disableRipple
+              component={RouterLink}
+              to="/question-creator"
+            >
+              Submit Question
+            </Button>
+          </Stack>
+          <IconButton edge="start" color="inherit">
             <MenuIcon />
           </IconButton>
-        </Toolbar>{" "}
+        </Toolbar>
       </Container>
     </AppBar>
   );

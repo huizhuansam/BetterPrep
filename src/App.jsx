@@ -13,6 +13,7 @@ import SignupForm from "./forms/SignupForm";
 import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import BaseLayout from "./layouts/BaseLayout";
+import QuestionCreatorLayout from "./layouts/QuestionCreatorLayout";
 
 const App = () => {
   return (
@@ -26,7 +27,10 @@ const App = () => {
               <Route path="/signup" element={<SignupForm />} />
             </Route>
             <Route element={<AppLayout />}>
-              <Route path="/question-creator" element={<div></div>} />
+              <Route
+                path="/question-creator"
+                element={<QuestionCreatorLayout />}
+              />
             </Route>
           </Route>
         </Routes>
