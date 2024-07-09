@@ -8,10 +8,12 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import AuthLayout from "./layouts/AuthLayout";
 import LoginForm from "./forms/LoginForm";
 import SignupForm from "./forms/SignupForm";
+import AppLayout from "./layouts/AppLayout";
+import AuthLayout from "./layouts/AuthLayout";
 import BaseLayout from "./layouts/BaseLayout";
+import QuestionCreatorLayout from "./layouts/QuestionCreatorLayout";
 
 const App = () => {
   return (
@@ -23,6 +25,12 @@ const App = () => {
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<LoginForm />} />
               <Route path="/signup" element={<SignupForm />} />
+            </Route>
+            <Route element={<AppLayout />}>
+              <Route
+                path="/question-creator"
+                element={<QuestionCreatorLayout />}
+              />
             </Route>
           </Route>
         </Routes>

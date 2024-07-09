@@ -1,11 +1,13 @@
-import { Box } from "@mui/material";
+import { Container } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
 const BaseLayout = () => {
   return (
-    <Box alignItems="center">
+    // ensures ui takes up entire width of viewport
+    // ensures child elements are horizontally centered
+    <Container maxWidth={false} disableGutters>
       <Outlet />
-    </Box>
+    </Container>
   );
 };
 
