@@ -1,23 +1,27 @@
-import { Container, Divider, Stack } from "@mui/material";
+import { AppShell, Center, SimpleGrid } from "@mantine/core";
+import { useViewportSize } from "@mantine/hooks";
 import { Outlet } from "react-router-dom";
 
 import LogoBlink from "../assets/LogoBlink";
 
 const AuthLayout = () => {
+  const { height: viewportHeight, width: viewportWidth } = useViewportSize();
+
   return (
-    // constraints content to fit inside a maximum width
-    <Container disableGutters maxWidth="lg">
-      <Stack
-        justifyContent="space-evenly"
-        alignItems="center"
-        height="100vh"
-        direction="row"
-        divider={<Divider orientation="vertical" flexItem variant="middle" />}
-      >
-        <LogoBlink />
-        <Outlet />
-      </Stack>
-    </Container>
+    <AppShell>
+      <AppShell.Main>
+        <Center h={viewportHeight}>
+          <SimpleGrid cols={2} w={viewportWidth}>
+            <Center>
+              <LogoBlink />
+            </Center>
+            <Center>
+              <Outlet />
+            </Center>
+          </SimpleGrid>
+        </Center>
+      </AppShell.Main>
+    </AppShell>
   );
 };
 

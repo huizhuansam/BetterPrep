@@ -1,16 +1,23 @@
-import { Card, Stack, Typography } from "@mui/material";
-import Divider from "@mui/material/Divider";
-import Link from "@mui/material/Link";
+import {
+  Anchor,
+  Button,
+  Card,
+  Center,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
+import { useViewportSize } from "@mantine/hooks";
 import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import validator from "validator";
 
-import AuthButton from "../buttons/AuthButton";
-import EmailAddressField from "../inputs/EmailAddressField";
-import PasswordField from "../inputs/PasswordField";
-import UsernameField from "../inputs/UsernameField";
-
 const SignupForm = () => {
+  const navigateTo = useNavigate();
+
+  const { width: viewportWidth } = useViewportSize();
+
   const [emailAddress, setEmailAddress] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -54,67 +61,59 @@ const SignupForm = () => {
     if (!isFormCompleted) {
       return;
     }
-    const credentials = { emailAddress, username, password };
-    console.log(credentials);
+    // const credentials = { emailAddress, username, password };
+    navigateTo("/question-list");
   };
 
   return (
-    <Card sx={{ padding: 2 }} variant="outlined">
-      <Stack spacing={1} alignItems="center" justifyContent="center">
-        <Typography variant="h5" padding={1} sx={{ fontWeight: "bold" }}>
-          Sign Up
-        </Typography>
-        <EmailAddressField
-          helperText="invalid email address"
-          error={!isEmailValid}
-          emailAddress={emailAddress}
+    <Card shadow="sm" padding="lg" radius="md" withBorder w={viewportWidth / 4}>
+      <Card.Section inheritPadding py="xs">
+        <Center>
+          <Title order={2}>Sign up</Title>
+        </Center>
+      </Card.Section>
+      <Card.Section inheritPadding>
+        <Center>
+          <Text size="sm" c="dimmed">
+            Have an existing BetterPrep account?{" "}
+            <Anchor href="/login">Log in</Anchor>
+          </Text>
+        </Center>
+      </Card.Section>
+
+      <Card.Section inheritPadding py="xs">
+        <TextInput
+          placeholder="Email address"
+          variant="filled"
           onChange={handleInputEmailAddress}
         />
-        <UsernameField
-          helperText="username must be alphanumeric"
-          username={username}
-          error={!isUsernameValid}
+      </Card.Section>
+      <Card.Section inheritPadding py="xs">
+        <TextInput
+          placeholder="Username"
+          variant="filled"
           onChange={handleInputUsername}
         />
-        <PasswordField
-          label="password"
-          helperText="weak password"
-          password={password}
-          error={!isPasswordValid}
+      </Card.Section>
+      <Card.Section inheritPadding py="xs">
+        <PasswordInput
+          placeholder="Password"
+          variant="filled"
           onChange={handleInputPassword}
         />
-        <PasswordField
-          label="re-type password"
-          helperText="passwords do not match"
-          password={retypedPassword}
-          error={!isPasswordsMatch}
+      </Card.Section>
+      <Card.Section inheritPadding py="xs">
+        <PasswordInput
+          placeholder="Re-type password"
+          variant="filled"
           onChange={handleRetypedPassword}
         />
-        <AuthButton
-          displayText="create account"
-          disabled={!isFormInputValid}
-          onClick={handleSignUp}
-        />
-        <Divider flexItem />
-        <Stack
-          direction="row"
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={2}
-        >
-          <Link href="#" variant="body2" underline="none">
-            forgot password
-          </Link>
-          <Link
-            // modifies MUI Link to use react-router Link API
-            component={RouterLink}
-            to="/login"
-            variant="body2"
-            underline="none"
-          >
-            log in
-          </Link>
-        </Stack>
-      </Stack>
+      </Card.Section>
+      <Card.Section inheritPadding py="xs">
+        <Button fullWidth disabled={!isFormInputValid} onClick={handleSignUp}>
+          Create account
+        </Button>
+      </Card.Section>
     </Card>
   );
 };

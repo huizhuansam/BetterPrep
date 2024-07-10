@@ -1,20 +1,24 @@
-import { Card, Stack, Typography } from "@mui/material";
-import Divider from "@mui/material/Divider";
-import Link from "@mui/material/Link";
+import {
+  Anchor,
+  Button,
+  Card,
+  Center,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
+import { useViewportSize } from "@mantine/hooks";
 import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import validator from "validator";
 
-import AuthButton from "../buttons/AuthButton";
-import PasswordField from "../inputs/PasswordField";
-import UsernameField from "../inputs/UsernameField";
-
 const LoginForm = () => {
+  const navigateTo = useNavigate();
+  const { width: viewportWidth } = useViewportSize();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const isFormCompleted =
-    !validator.isEmpty(username) && !validator.isEmpty(password);
 
   const handleInputUsername = (e) => {
     setUsername(e.target.value);
@@ -25,47 +29,47 @@ const LoginForm = () => {
   };
 
   const handleLogin = () => {
-    const credentials = { username, password };
-    console.log(credentials);
+    navigateTo("/question-list");
   };
 
+  const isFormCompleted =
+    !validator.isEmpty(username) && !validator.isEmpty(password);
+
   return (
-    <Card sx={{ padding: 2 }} variant="outlined">
-      <Stack spacing={2} alignItems="center" justifyContent="center">
-        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-          Log In
-        </Typography>
-        <UsernameField username={username} onChange={handleInputUsername} />
-        <PasswordField
-          label="password"
-          password={password}
+    <Card shadow="sm" padding="lg" radius="md" withBorder w={viewportWidth / 4}>
+      <Card.Section inheritPadding py="xs">
+        <Center>
+          <Title order={2}>Log in</Title>
+        </Center>
+      </Card.Section>
+      <Card.Section inheritPadding>
+        <Center>
+          <Text size="sm" c="dimmed">
+            New to BetterPrep? <Anchor href="/signup">Sign up instead</Anchor>
+          </Text>
+        </Center>
+      </Card.Section>
+
+      <Card.Section inheritPadding py="xs">
+        <TextInput
+          placeholder="Username"
+          variant="filled"
+          onChange={handleInputUsername}
+        />
+      </Card.Section>
+      <Card.Section inheritPadding py="xs">
+        <PasswordInput
+          placeholder="Password"
+          variant="filled"
           onChange={handleInputPassword}
         />
-        <AuthButton
-          displayText="continue"
-          disabled={!isFormCompleted}
-          onClick={handleLogin}
-        />
-        <Divider flexItem />
-        <Stack
-          direction="row"
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={2}
-        >
-          <Link href="#" variant="body2" underline="none">
-            forgot password
-          </Link>
-          <Link
-            // modifies MUI Link to use react-router Link API
-            component={RouterLink}
-            to="/signup"
-            variant="body2"
-            underline="none"
-          >
-            sign up
-          </Link>
-        </Stack>
-      </Stack>
+        <Anchor size="sm">Forgot password?</Anchor>
+      </Card.Section>
+      <Card.Section inheritPadding py="xs">
+        <Button fullWidth disabled={!isFormCompleted} onClick={handleLogin}>
+          Continue
+        </Button>
+      </Card.Section>
     </Card>
   );
 };
