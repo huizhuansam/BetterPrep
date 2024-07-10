@@ -1,10 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import SignupForm from "./forms/SignupForm";
 import LoginForm from "./forms/LoginForm";
-import AuthLayout from "./layouts/AuthLayout";
+import SignupForm from "./forms/SignupForm";
 import AppLayout from "./layouts/AppLayout";
+import AuthLayout from "./layouts/AuthLayout";
 import QuestionCreatorLayout from "./layouts/QuestionCreatorLayout";
+import QuestionListLayout from "./layouts/QuestionListLayout";
 
 const AppRouter = () => {
   return (
@@ -15,7 +16,8 @@ const AppRouter = () => {
           <Route path="/login" element={<LoginForm />} />
         </Route>
         <Route element={<AppLayout />}>
-          <Route path="/question-list" />
+          <Route path="/question/:id" />
+          <Route path="/question-list" element={<QuestionListLayout />} />
           <Route path="/question-creator" element={<QuestionCreatorLayout />} />
         </Route>
       </Routes>

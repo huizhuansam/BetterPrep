@@ -1,8 +1,8 @@
-import { SvgIcon } from "@mui/material";
+import { ThemeIcon } from "@mantine/core";
 
 const LogoStatic = () => {
   return (
-    <SvgIcon fontSize="large">
+    <ThemeIcon variant="white">
       <svg
         width="117"
         height="60"
@@ -15,7 +15,7 @@ const LogoStatic = () => {
           fill="black"
         />
       </svg>
-    </SvgIcon>
+    </ThemeIcon>
   );
 };
 
