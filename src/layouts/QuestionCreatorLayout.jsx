@@ -1,106 +1,95 @@
-import { Box, Button, Divider, Grid, Typography } from "@mui/material";
-import MarkdownPreview from "@uiw/react-markdown-preview";
 import React, { useState } from "react";
-import MonacoEditor from "react-monaco-editor";
-import validator from "validator";
+import Markdown from "react-markdown";
 
-import QuestionTitleField from "../inputs/QuestionTitleField";
+import {
+  Button,
+  Card,
+  Center,
+  Container,
+  Divider,
+  Grid,
+  Group,
+  Stack,
+  Textarea,
+  TextInput,
+  Title,
+} from "@mantine/core";
+import validator from "validator";
 
 const QuestionCreatorLayout = () => {
   const [questionTitle, setQuestionTitle] = useState("");
-  const [userInput, setUserInput] = useState("");
+  const [markdownText, setMarkdownText] = useState("");
+  const remainingViewportHeight = "calc(100vh - 60)";
 
-  // eslint-disable-next-line no-unused-vars
-  const handleUserInput = (v, _) => {
-    setUserInput(v);
-  };
-
-  const handleQuestionTitle = (e) => {
-    setQuestionTitle(e.target.value);
-  };
-
-  const isValidFormInput =
-    !validator.isEmpty(questionTitle) && !validator.isEmpty(userInput);
-
-  const markdown = userInput;
+  const isFormValid =
+    !validator.isEmpty(questionTitle) && !validator.isEmpty(markdownText);
 
   return (
-    <Box
-      sx={{
-        // todo: dynamically calculate height based on remaining space on viewport
-        height: "94vh",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
-    >
-      <Grid
-        container
-        spacing={2}
-        sx={{ flex: 1, overflow: "hidden" }}
-        padding={1}
-      >
-        <Grid
-          item
-          xs={6}
-          sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+    <Container fluid style={{ height: remainingViewportHeight }}>
+      <Grid grow align="stretch" style={{ flex: 1, overflow: "hidden" }}>
+        <Grid.Col span={6}>
+          <Center>
+            <Title order={2}>Enter question here</Title>
+          </Center>
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Center>
+            <Title order={2}>Preview</Title>
+          </Center>
+        </Grid.Col>
+        <Grid.Col
+          span={6}
+          style={{ display: "flex", flexDirection: "column", height: "100%" }}
         >
-          <QuestionTitleField onChange={handleQuestionTitle} />
-          <Typography variant="h6" padding={1}>
-            Enter question description here (Markdown supported)
-          </Typography>
-          <Divider />
-          <MonacoEditor
-            language="markdown"
-            value={userInput}
-            onChange={handleUserInput}
-            height="100%"
-            options={{
-              wordWrap: true,
-              minimap: { enabled: false },
-              automaticLayout: true,
-            }}
-          />
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          sx={{ display: "flex", flexDirection: "column", height: "100%" }}
-        >
-          <Typography variant="h6" padding={1}>
-            Question preview
-          </Typography>
-          <Divider />
-          <Box sx={{ flex: 1, overflow: "auto" }} border={1}>
-            <MarkdownPreview
-              source={markdown}
-              wrapperElement={{
-                "data-color-mode": "light",
-              }}
-            />
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              mt: 2,
-              gap: 1,
-            }}
-          >
-            <Button color="warning" variant="outlined" sx={{ mr: 1 }}>
-              Discard
-            </Button>
-            <Button
-              color="success"
-              variant="contained"
-              disabled={!isValidFormInput}
+          <Stack align="stretch" style={{ flex: 1, overflow: "hidden" }}>
+            <Card
+              shadow="sm"
+              padding="lg"
+              withBorder
+              style={{ flex: 1, display: "flex", flexDirection: "column" }}
             >
-              Submit
-            </Button>
-          </Box>
-        </Grid>
+              <Card.Section inheritPadding py="xs">
+                <TextInput
+                  placeholder="Question title"
+                  onChange={(e) => setQuestionTitle(e.target.value)}
+                />
+              </Card.Section>
+              <Divider />
+              <Card.Section inheritPadding py="xs">
+                <Textarea
+                  onChange={(e) => setMarkdownText(e.target.value)}
+                  autosize
+                  placeholder="Question description (Markdown supported)"
+                />
+              </Card.Section>
+            </Card>
+          </Stack>
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Center>
+            <Card style={{ width: "100%" }} withBorder padding="lg">
+              <Card.Section inheritPadding py="xs">
+                <Markdown>
+                  {!validator.isEmpty(markdownText)
+                    ? markdownText
+                    : "*Your question description appears here*"}
+                </Markdown>
+              </Card.Section>
+              <Card.Section inheritPadding py="xs">
+                <Group align="center" grow>
+                  <Button color="green" disabled={!isFormValid}>
+                    Submit
+                  </Button>
+                  <Button color="orange" disabled={!isFormValid}>
+                    Discard
+                  </Button>
+                </Group>
+              </Card.Section>
+            </Card>
+          </Center>
+        </Grid.Col>
       </Grid>
-    </Box>
+    </Container>
   );
 };
 
