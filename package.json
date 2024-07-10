@@ -1,0 +1,14 @@
+{
+  "name": "betterprep",
+  "version": "1.0.0",
+  "description": "An experiment on how far a guy can push his software engineering skills. Also a multiplayer coding interview practice platform.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Siew Hui Zhuan",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^2.7.1"
+  }
+}
