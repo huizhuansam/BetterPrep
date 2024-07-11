@@ -1,6 +1,3 @@
-import { useState } from "react";
-import Markdown from "react-markdown";
-
 import {
   Button,
   Card,
@@ -15,8 +12,11 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import validator from "validator";
+import { notifications } from "@mantine/notifications";
+import { useState } from "react";
+import Markdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
+import validator from "validator";
 
 const QuestionCreatorLayout = () => {
   const navigateTo = useNavigate();
@@ -64,6 +64,10 @@ const QuestionCreatorLayout = () => {
       question,
     ];
     localStorage.setItem("questionList", JSON.stringify(currQuestionList));
+    notifications.show({
+      message: "Question submitted!",
+      autoClose: false,
+    });
     navigateTo("/questions");
   };
 
