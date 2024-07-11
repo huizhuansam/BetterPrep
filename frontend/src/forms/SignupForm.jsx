@@ -62,7 +62,7 @@ const SignupForm = () => {
       return;
     }
     // const credentials = { emailAddress, username, password };
-    navigateTo("/question-list");
+    navigateTo("/questions");
   };
 
   return (

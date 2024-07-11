@@ -7,7 +7,7 @@ const QuestionListLayout = () => {
   const rows = questionList.map((question, questionIndex) => {
     const id = questionIndex + 1;
     return (
-      <Table.Tr key={id} onClick={() => navigateTo(`/question/${id}`)}>
+      <Table.Tr key={id} onClick={() => navigateTo(`/questions/${id}`)}>
         <Table.Td>{id + ". " + question.title}</Table.Td>
         <Table.Td>{question.complexity}</Table.Td>
         <Table.Td>
