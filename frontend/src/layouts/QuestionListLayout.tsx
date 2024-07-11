@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 const QuestionListLayout = () => {
   const navigateTo = useNavigate();
-  const questionList = JSON.parse(localStorage.getItem("questionList"));
-  const rows = questionList.map((question, questionIndex) => {
+  const questionList = JSON.parse(localStorage.getItem("questionList") || "[]");
+  const rows = questionList.map((question: any, questionIndex: number) => {
     const id = questionIndex + 1;
     return (
       <Table.Tr key={id} onClick={() => navigateTo(`/questions/${id}`)}>
@@ -12,7 +12,7 @@ const QuestionListLayout = () => {
         <Table.Td>{question.complexity}</Table.Td>
         <Table.Td>
           <Pill.Group>
-            {question.categories.map((category, categoryIndex) => (
+            {question.categories.map((category: any, categoryIndex: number) => (
               <Pill key={categoryIndex}>{category}</Pill>
             ))}
           </Pill.Group>

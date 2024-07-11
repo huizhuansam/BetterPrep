@@ -9,4 +9,7 @@ if (localStorage.getItem("questionList") === null) {
 }
 
 // Application entry point
-createRoot(document.getElementById("root")).render(<App />);
+const root = document.getElementById("root")
+if (root !== null) {
+  createRoot(root).render(<App />);
+}
