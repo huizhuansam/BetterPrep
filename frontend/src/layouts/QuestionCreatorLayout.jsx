@@ -64,7 +64,7 @@ const QuestionCreatorLayout = () => {
       question,
     ];
     localStorage.setItem("questionList", JSON.stringify(currQuestionList));
-    navigateTo("/question-list");
+    navigateTo("/questions");
   };
 
   return (

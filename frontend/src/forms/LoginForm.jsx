@@ -29,7 +29,7 @@ const LoginForm = () => {
   };
 
   const handleLogin = () => {
-    navigateTo("/question-list");
+    navigateTo("/questions");
   };
 
   const isFormCompleted =

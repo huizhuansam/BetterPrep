@@ -16,8 +16,8 @@ const AppRouter = () => {
           <Route path="/login" element={<LoginForm />} />
         </Route>
         <Route element={<AppLayout />}>
-          <Route path="/question/:id" />
-          <Route path="/question-list" element={<QuestionListLayout />} />
+          <Route path="/questions/:id" />
+          <Route path="/questions" element={<QuestionListLayout />} />
           <Route path="/question-creator" element={<QuestionCreatorLayout />} />
         </Route>
       </Routes>

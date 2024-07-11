@@ -12,7 +12,7 @@ const NavTabs = () => {
       onChange={(value) => navigate(`${value}`)}
     >
       <Tabs.List>
-        <Tabs.Tab value="/question-list">Question List</Tabs.Tab>
+        <Tabs.Tab value="/questions">Question List</Tabs.Tab>
         <Tabs.Tab value="/question-creator">Submit A Question</Tabs.Tab>
       </Tabs.List>
     </Tabs>
