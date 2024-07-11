@@ -41,27 +41,23 @@ const SignupForm = () => {
     isEmailValid &&
     isUsernameValid;
 
-  const handleInputEmailAddress = (e) => {
+  const handleInputEmailAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailAddress(e.target.value);
   };
 
-  const handleInputUsername = (e) => {
+  const handleInputUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
 
-  const handleInputPassword = (e) => {
+  const handleInputPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleRetypedPassword = (e) => {
+  const handleRetypedPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRetypedPassword(e.target.value);
   };
 
   const handleSignUp = () => {
-    if (!isFormCompleted) {
-      return;
-    }
-    // const credentials = { emailAddress, username, password };
     navigateTo("/questions");
   };
 

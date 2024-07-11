@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Markdown from "react-markdown";
 
 import {
@@ -60,7 +60,7 @@ const QuestionCreatorLayout = () => {
       categories: categoriesToArray,
     };
     const currQuestionList = [
-      ...JSON.parse(localStorage.getItem("questionList")),
+      ...JSON.parse(localStorage.getItem("questionList") || "[]"),
       question,
     ];
     localStorage.setItem("questionList", JSON.stringify(currQuestionList));

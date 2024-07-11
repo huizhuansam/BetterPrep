@@ -20,20 +20,20 @@ const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleInputUsername = (e) => {
-    setUsername(e.target.value);
+  const isFormCompleted =
+    !validator.isEmpty(username) && !validator.isEmpty(password);
+
+  const handleInputUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.currentTarget.value);
   };
 
-  const handleInputPassword = (e) => {
-    setPassword(e.target.value);
+  const handleInputPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.currentTarget.value);
   };
 
   const handleLogin = () => {
     navigateTo("/questions");
   };
-
-  const isFormCompleted =
-    !validator.isEmpty(username) && !validator.isEmpty(password);
 
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder w={viewportWidth / 4}>
