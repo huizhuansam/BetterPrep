@@ -1,16 +1,20 @@
-import "@mantine/core/styles.css";
-import "@mantine/notifications/styles.css";
-
 import { MantineProvider } from "@mantine/core";
+import "@mantine/core/styles.css";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import AppRouter from "./AppRouter";
-import { Notifications } from "@mantine/notifications";
+
+const queryClient = new QueryClient();
 
 const App = () => {
   return (
     <MantineProvider>
-      <Notifications position="top-right" />
-      <AppRouter />
+      <QueryClientProvider client={queryClient}>
+        <Notifications position="top-right" />
+        <AppRouter />
+      </QueryClientProvider>
     </MantineProvider>
   );
 };

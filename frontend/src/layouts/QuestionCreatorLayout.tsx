@@ -41,6 +41,7 @@ const QuestionCreatorLayout = () => {
   };
 
   const handleSubmit = () => {
+    // TODO: http POST request to backend
     if (localStorage.getItem("questionList") === null) {
       localStorage.setItem("questionList", JSON.stringify([]));
     }

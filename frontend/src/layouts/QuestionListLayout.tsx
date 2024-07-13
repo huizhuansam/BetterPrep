@@ -1,25 +1,47 @@
 import { Card, Pill, Table, Title } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-const QuestionListLayout = () => {
+import fetchAllQuestions from "../api/fetchAllQuestions";
+
+type RowProps = {
+  questionList: Array<any>;
+};
+
+const QuestionListRows = ({ questionList }: RowProps) => {
   const navigateTo = useNavigate();
-  const questionList = JSON.parse(localStorage.getItem("questionList") || "[]");
-  const rows = questionList.map((question: any, questionIndex: number) => {
-    const id = questionIndex + 1;
-    return (
-      <Table.Tr key={id} onClick={() => navigateTo(`/questions/${id}`)}>
-        <Table.Td>{id + ". " + question.title}</Table.Td>
-        <Table.Td>{question.complexity}</Table.Td>
-        <Table.Td>
-          <Pill.Group>
-            {question.categories.map((category: any, categoryIndex: number) => (
-              <Pill key={categoryIndex}>{category}</Pill>
-            ))}
-          </Pill.Group>
-        </Table.Td>
-      </Table.Tr>
-    );
+  return (
+    <>
+      {questionList.map((question: any, questionIndex: number) => {
+        const id = questionIndex + 1;
+        return (
+          <Table.Tr key={id} onClick={() => navigateTo(`/questions/${id}`)}>
+            <Table.Td>{id + ". " + question.title}</Table.Td>
+            <Table.Td>{question.complexity}</Table.Td>
+            <Table.Td>
+              <Pill.Group>
+                {question.categories.map(
+                  (category: any, categoryIndex: number) => (
+                    <Pill key={categoryIndex}>{category}</Pill>
+                  )
+                )}
+              </Pill.Group>
+            </Table.Td>
+          </Table.Tr>
+        );
+      })}
+    </>
+  );
+};
+
+const QuestionListLayout = () => {
+  const questionApiCall = useQuery({
+    queryKey: ["questions"],
+    queryFn: fetchAllQuestions,
   });
+
+  const questionList = questionApiCall.data || [];
+  console.log(questionApiCall);
 
   return (
     <Card shadow="sm" padding="lg" withBorder>
@@ -34,7 +56,9 @@ const QuestionListLayout = () => {
             <Table.Th>Categories</Table.Th>
           </Table.Tr>
         </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
+        <Table.Tbody>
+          <QuestionListRows questionList={questionList} />
+        </Table.Tbody>
       </Table>
     </Card>
   );
