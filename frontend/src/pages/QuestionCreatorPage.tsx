@@ -17,8 +17,9 @@ import { useState } from "react";
 import Markdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
+import createQuestion from "../api/createQuestion";
 
-const QuestionCreatorLayout = () => {
+const QuestionCreatorPage = () => {
   const navigateTo = useNavigate();
   const remainingViewportHeight = "calc(100vh - 60)";
 
@@ -33,6 +34,16 @@ const QuestionCreatorLayout = () => {
     !validator.isEmpty(categories) &&
     !validator.isEmpty(complexity);
 
+  const categoriesToArray = () => [
+    ...new Set(
+      categories
+        .trim()
+        .split(",")
+        .filter((s) => !validator.isEmpty(s))
+        .map((s) => s.trim())
+    ),
+  ];
+
   const handleDiscard = () => {
     setQuestionTitle("");
     setMarkdownText("");
@@ -40,31 +51,23 @@ const QuestionCreatorLayout = () => {
     setComplexity("easy");
   };
 
-  const handleSubmit = () => {
-    // TODO: http POST request to backend
-    if (localStorage.getItem("questionList") === null) {
-      localStorage.setItem("questionList", JSON.stringify([]));
-    }
-    const categoriesToArray = [
-      ...new Set(
-        categories
-          .trim()
-          .split(",")
-          .filter((s) => !validator.isEmpty(s))
-          .map((s) => s.trim())
-      ),
-    ];
+  const handleSubmit = async () => {
+    const categoryArray = categoriesToArray();
     const question = {
       title: questionTitle,
       complexity,
       description: markdownText,
-      categories: categoriesToArray,
+      categories: categoryArray,
     };
-    const currQuestionList = [
-      ...JSON.parse(localStorage.getItem("questionList") || "[]"),
-      question,
-    ];
-    localStorage.setItem("questionList", JSON.stringify(currQuestionList));
+    const response = await createQuestion(question);
+    if (!response) {
+      notifications.show({
+        color: "red",
+        message: "Something went wrong!",
+        autoClose: false,
+      });
+      return;
+    }
     notifications.show({
       message: "Question submitted!",
       autoClose: false,
@@ -168,4 +171,4 @@ const QuestionCreatorLayout = () => {
   );
 };
 
-export default QuestionCreatorLayout;
+export default QuestionCreatorPage;

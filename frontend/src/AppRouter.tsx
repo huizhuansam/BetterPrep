@@ -4,8 +4,8 @@ import LoginForm from "./forms/LoginForm";
 import SignupForm from "./forms/SignupForm";
 import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
-import QuestionCreatorLayout from "./layouts/QuestionCreatorLayout";
-import QuestionListLayout from "./layouts/QuestionListLayout";
+import QuestionCreatorPage from "./pages/QuestionCreatorPage";
+import QuestionListPage from "./pages/QuestionListPage/QuestionListPage";
 
 const AppRouter = () => {
   return (
@@ -17,8 +17,8 @@ const AppRouter = () => {
         </Route>
         <Route element={<AppLayout />}>
           <Route path="/questions/:id" />
-          <Route path="/questions" element={<QuestionListLayout />} />
-          <Route path="/question-creator" element={<QuestionCreatorLayout />} />
+          <Route path="/questions" element={<QuestionListPage />} />
+          <Route path="/question-creator" element={<QuestionCreatorPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
