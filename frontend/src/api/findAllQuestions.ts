@@ -1,4 +1,4 @@
-const fetchAllQuestions = async () => {
+const findAllQuestions = async () => {
   const questions = await fetch(`http://localhost:3000/questions`);
   if (!questions.ok) {
     // TODO: handle errors
@@ -7,4 +7,4 @@ const fetchAllQuestions = async () => {
   return questions.json();
 };
 
-export default fetchAllQuestions;
+export default findAllQuestions;
