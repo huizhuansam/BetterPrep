@@ -1,13 +1,22 @@
-import { Body, Controller, Get, Post, ValidationPipe } from '@nestjs/common';
-import { Question } from './schemas/question.schema';
-import { QuestionsService } from './questions.service';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseFilters,
+  ValidationPipe,
+} from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { MongoExceptionFilter } from './mongo-exception.filter';
+import { QuestionsService } from './questions.service';
+import { Question } from './schemas/question.schema';
 
 @Controller('questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
   @Post()
+  @UseFilters(MongoExceptionFilter)
   async create(@Body(ValidationPipe) createQuestionDto: CreateQuestionDto) {
     return await this.questionsService.create(createQuestionDto);
   }
