@@ -16,8 +16,11 @@ import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import Markdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
+import { serializeError } from "serialize-error";
 import validator from "validator";
-import createQuestion from "../api/createQuestion";
+import createQuestion from "../../api/createQuestion";
+import processUserInput from "./processUserInput";
+import validateFormData from "./validateFormData";
 
 const QuestionCreatorPage = () => {
   const navigateTo = useNavigate();
@@ -28,22 +31,6 @@ const QuestionCreatorPage = () => {
   const [complexity, setComplexity] = useState("easy");
   const [categories, setCategories] = useState("");
 
-  const isFormValid =
-    !validator.isEmpty(questionTitle) &&
-    !validator.isEmpty(markdownText) &&
-    !validator.isEmpty(categories) &&
-    !validator.isEmpty(complexity);
-
-  const categoriesToArray = () => [
-    ...new Set(
-      categories
-        .trim()
-        .split(",")
-        .filter((s) => !validator.isEmpty(s))
-        .map((s) => s.trim())
-    ),
-  ];
-
   const handleDiscard = () => {
     setQuestionTitle("");
     setMarkdownText("");
@@ -52,28 +39,33 @@ const QuestionCreatorPage = () => {
   };
 
   const handleSubmit = async () => {
-    const categoryArray = categoriesToArray();
-    const question = {
-      title: questionTitle,
-      complexity,
-      description: markdownText,
-      categories: categoryArray,
-    };
-    const response = await createQuestion(question);
-    if (!response) {
+    try {
+      await createQuestion(
+        processUserInput({
+          questionTitle,
+          markdownText,
+          categories,
+          complexity,
+        })
+      );
       notifications.show({
-        color: "red",
-        message: "Something went wrong!",
-        autoClose: false,
+        message: "Question submitted!",
       });
-      return;
+      navigateTo("/questions");
+    } catch (error: any) {
+      notifications.show({
+        message: "Error: " + JSON.stringify(serializeError(error).message),
+        color: "red",
+      });
     }
-    notifications.show({
-      message: "Question submitted!",
-      autoClose: false,
-    });
-    navigateTo("/questions");
   };
+
+  const isFormValid = validateFormData({
+    questionTitle,
+    markdownText,
+    categories,
+    complexity,
+  });
 
   return (
     <Container fluid style={{ height: remainingViewportHeight }}>

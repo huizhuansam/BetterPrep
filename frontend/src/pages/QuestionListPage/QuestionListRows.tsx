@@ -9,19 +9,17 @@ const QuestionListRows = ({ questionList }: RowProps) => {
   const navigateTo = useNavigate();
   return (
     <>
-      {questionList.map((question: any, questionIndex: number) => {
-        const id = questionIndex + 1;
+      {questionList.map((question: any) => {
+        const { complexity, title, categories, urlId } = question;
         return (
-          <Table.Tr key={id} onClick={() => navigateTo(`/questions/${id}`)}>
-            <Table.Td>{id + ". " + question.title}</Table.Td>
-            <Table.Td>{question.complexity}</Table.Td>
+          <Table.Tr onClick={() => navigateTo(`/questions/${urlId}`)}>
+            <Table.Td>{title}</Table.Td>
+            <Table.Td>{complexity}</Table.Td>
             <Table.Td>
               <Pill.Group>
-                {question.categories.map(
-                  (category: any, categoryIndex: number) => (
-                    <Pill key={categoryIndex}>{category}</Pill>
-                  )
-                )}
+                {categories.map((category: any, categoryIndex: number) => (
+                  <Pill key={categoryIndex}>{category}</Pill>
+                ))}
               </Pill.Group>
             </Table.Td>
           </Table.Tr>

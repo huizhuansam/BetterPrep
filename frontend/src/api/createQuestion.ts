@@ -8,11 +8,11 @@ const createQuestion = async (question: any) => {
     "http://localhost:3000/questions",
     requestOptions
   );
+  const responseBody = response.json();
   if (!response.ok) {
-    // todo: handle server error
-    return undefined;
+    throw Error((await responseBody).message);
   }
-  return response.json();
+  return responseBody;
 };
 
 export default createQuestion;
