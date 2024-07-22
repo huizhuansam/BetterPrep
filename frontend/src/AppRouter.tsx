@@ -6,6 +6,7 @@ import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import QuestionCreatorPage from "./pages/QuestionCreatorPage/QuestionCreatorPage";
 import QuestionListPage from "./pages/QuestionListPage/QuestionListPage";
+import QuestionPage from "./pages/QuestionPage";
 
 const AppRouter = () => {
   return (
@@ -16,7 +17,7 @@ const AppRouter = () => {
           <Route path="/login" element={<LoginForm />} />
         </Route>
         <Route element={<AppLayout />}>
-          <Route path="/questions/:id" />
+          <Route path="/questions/:urlId" element={<QuestionPage />} />
           <Route path="/questions" element={<QuestionListPage />} />
           <Route path="/question-creator" element={<QuestionCreatorPage />} />
         </Route>

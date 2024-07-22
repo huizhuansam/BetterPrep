@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
+  Param,
   Post,
   UseFilters,
   ValidationPipe,
@@ -24,5 +26,14 @@ export class QuestionsController {
   @Get()
   async findAll(): Promise<Question[]> {
     return await this.questionsService.findAll();
+  }
+
+  @Get(':urlId')
+  async findOne(@Param('urlId') urlId: string): Promise<Question> {
+    const question = await this.questionsService.findOne(urlId);
+    if (!question) {
+      throw new NotFoundException();
+    }
+    return question;
   }
 }

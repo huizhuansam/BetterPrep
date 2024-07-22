@@ -28,4 +28,8 @@ export class QuestionsService {
   async findAll(): Promise<Question[]> {
     return this.questionModel.find().exec();
   }
+
+  async findOne(urlId: string): Promise<Question | null> {
+    return this.questionModel.findOne({ urlId }).exec();
+  }
 }
