@@ -16,9 +16,13 @@ import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import Markdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
+import { serializeError } from "serialize-error";
 import validator from "validator";
+import createQuestion from "../../api/createQuestion";
+import processUserInput from "./processUserInput";
+import validateFormData from "./validateFormData";
 
-const QuestionCreatorLayout = () => {
+const QuestionCreatorPage = () => {
   const navigateTo = useNavigate();
   const remainingViewportHeight = "calc(100vh - 60)";
 
@@ -27,12 +31,6 @@ const QuestionCreatorLayout = () => {
   const [complexity, setComplexity] = useState("easy");
   const [categories, setCategories] = useState("");
 
-  const isFormValid =
-    !validator.isEmpty(questionTitle) &&
-    !validator.isEmpty(markdownText) &&
-    !validator.isEmpty(categories) &&
-    !validator.isEmpty(complexity);
-
   const handleDiscard = () => {
     setQuestionTitle("");
     setMarkdownText("");
@@ -40,36 +38,34 @@ const QuestionCreatorLayout = () => {
     setComplexity("easy");
   };
 
-  const handleSubmit = () => {
-    if (localStorage.getItem("questionList") === null) {
-      localStorage.setItem("questionList", JSON.stringify([]));
+  const handleSubmit = async () => {
+    try {
+      await createQuestion(
+        processUserInput({
+          questionTitle,
+          markdownText,
+          categories,
+          complexity,
+        })
+      );
+      notifications.show({
+        message: "Question submitted!",
+      });
+      navigateTo("/questions");
+    } catch (error: any) {
+      notifications.show({
+        message: "Error: " + JSON.stringify(serializeError(error).message),
+        color: "red",
+      });
     }
-    const categoriesToArray = [
-      ...new Set(
-        categories
-          .trim()
-          .split(",")
-          .filter((s) => !validator.isEmpty(s))
-          .map((s) => s.trim())
-      ),
-    ];
-    const question = {
-      title: questionTitle,
-      complexity,
-      description: markdownText,
-      categories: categoriesToArray,
-    };
-    const currQuestionList = [
-      ...JSON.parse(localStorage.getItem("questionList") || "[]"),
-      question,
-    ];
-    localStorage.setItem("questionList", JSON.stringify(currQuestionList));
-    notifications.show({
-      message: "Question submitted!",
-      autoClose: false,
-    });
-    navigateTo("/questions");
   };
+
+  const isFormValid = validateFormData({
+    questionTitle,
+    markdownText,
+    categories,
+    complexity,
+  });
 
   return (
     <Container fluid style={{ height: remainingViewportHeight }}>
@@ -167,4 +163,4 @@ const QuestionCreatorLayout = () => {
   );
 };
 
-export default QuestionCreatorLayout;
+export default QuestionCreatorPage;
