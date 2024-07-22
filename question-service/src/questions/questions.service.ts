@@ -11,7 +11,17 @@ export class QuestionsService {
   ) {}
 
   async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
-    const createdQuestion = new this.questionModel(createQuestionDto);
+    // create url id
+    const urlId = createQuestionDto.title
+      .trim()
+      .toLowerCase()
+      .split(/(\s+)/)
+      .filter((s) => !s.match(/(\s+)/))
+      .join('-');
+    const createdQuestion = new this.questionModel({
+      ...createQuestionDto,
+      urlId,
+    });
     return createdQuestion.save();
   }
 
