@@ -1,8 +1,8 @@
 import { Tabs } from "@mantine/core";
-import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const NavTabs = () => {
-  const navigate: NavigateFunction = useNavigate();
+  const navigate = useNavigate();
   const currPath: string = useLocation().pathname;
 
   return (

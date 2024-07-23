@@ -7,6 +7,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import QuestionCreatorPage from "./pages/QuestionCreatorPage/QuestionCreatorPage";
 import QuestionListPage from "./pages/QuestionListPage/QuestionListPage";
 import QuestionPage from "./pages/QuestionPage";
+import MyProfilePage from "./pages/MyProfilePage/MyProfilePage";
 
 const AppRouter = () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
           <Route path="/questions/:slug" element={<QuestionPage />} />
           <Route path="/questions" element={<QuestionListPage />} />
           <Route path="/question-creator" element={<QuestionCreatorPage />} />
+          <Route path="/my-profile" element={<MyProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
