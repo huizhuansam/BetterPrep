@@ -12,7 +12,7 @@ export class QuestionsService {
 
   async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
     // create url id
-    const urlId = createQuestionDto.title
+    const slug = createQuestionDto.title
       .trim()
       .toLowerCase()
       .split(/(\s+)/)
@@ -20,7 +20,7 @@ export class QuestionsService {
       .join('-');
     const createdQuestion = new this.questionModel({
       ...createQuestionDto,
-      urlId,
+      slug,
     });
     return createdQuestion.save();
   }
@@ -29,7 +29,7 @@ export class QuestionsService {
     return this.questionModel.find().exec();
   }
 
-  async findOne(urlId: string): Promise<Question | null> {
-    return this.questionModel.findOne({ urlId }).exec();
+  async findOne(slug: string): Promise<Question | null> {
+    return this.questionModel.findOne({ slug }).exec();
   }
 }
