@@ -3,16 +3,16 @@ import {
   Button,
   Card,
   Center,
-  Container,
   Divider,
   Grid,
-  Group,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 
 const MyProfilePage = () => {
+  const navigate = useNavigate();
   const user = {
     username: "huizhuansam",
     accountCreatedAt: "1st January 2024",
@@ -47,7 +47,9 @@ const MyProfilePage = () => {
           <Divider />
           <Card.Section inheritPadding py="xs">
             <Center>
-              <Button>Edit Profile</Button>
+              <Button onClick={() => navigate(`/my-profile/editor`)}>
+                Edit Profile
+              </Button>
             </Center>
           </Card.Section>
         </Card>
