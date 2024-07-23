@@ -28,9 +28,9 @@ export class QuestionsController {
     return await this.questionsService.findAll();
   }
 
-  @Get(':urlId')
-  async findOne(@Param('urlId') urlId: string): Promise<Question> {
-    const question = await this.questionsService.findOne(urlId);
+  @Get(':slug')
+  async findOne(@Param('slug') slug: string): Promise<Question> {
+    const question = await this.questionsService.findOne(slug);
     if (!question) {
       throw new NotFoundException();
     }

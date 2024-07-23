@@ -9,7 +9,7 @@ export class Question {
   title: string;
 
   @Prop({ required: true })
-  urlId: string;
+  slug: string;
 
   @Prop({ required: true })
   complexity: 'easy' | 'medium' | 'hard';

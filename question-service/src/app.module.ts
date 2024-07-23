@@ -4,7 +4,9 @@ import { QuestionsModule } from './questions/questions.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://root:example@localhost:27017/'),
+    MongooseModule.forRoot(
+      process.env.MONGO_CONNECTION_STRING || 'http://localhost:27017/',
+    ),
     QuestionsModule,
   ],
 })

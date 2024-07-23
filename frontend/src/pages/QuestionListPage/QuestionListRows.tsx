@@ -6,11 +6,11 @@ const QuestionListRows = ({ questionList }: { questionList: Array<any> }) => {
   return (
     <>
       {questionList.map((question: any, questionIndex: number) => {
-        const { complexity, title, categories, urlId } = question;
+        const { complexity, title, categories, slug } = question;
         return (
           <Table.Tr
             key={questionIndex}
-            onClick={() => navigateTo(`/questions/${urlId}`)}
+            onClick={() => navigateTo(`/questions/${slug}`)}
           >
             <Table.Td>{title}</Table.Td>
             <Table.Td>{complexity}</Table.Td>

@@ -1,0 +1,46 @@
+# FOR DEVELOPMENT USE ONLY
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/home/node/code
+      - /home/node/code/node_modules
+    environment:
+      - VITE_QUESTION_SERVICE_PROXY: http://localhost:3000
+
+  question-service:
+    build: ./question-service
+    networks:
+      - question-network
+    ports:
+      - 3000:3000
+    volumes:
+      - ./question-service:/home/node/code
+      - /home/node/code/node_modules
+    depends_on:
+      - question-service-db
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://dev:password@question-service-db:27017
+
+  question-service-db:
+    image: mongo
+    networks:
+      - question-network
+    ports:
+      - 27017:27017
+    volumes:
+      - type: bind
+        source: ./docker-data
+        target: /data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME: dev
+      - MONGO_INITDB_ROOT_PASSWORD: password
+
+networks:
+  question-network:
+    driver: bridge
+
+volumes:
+  question-service-db:

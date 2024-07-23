@@ -5,12 +5,12 @@ import { useParams } from "react-router-dom";
 import findQuestion from "../api/findQuestion";
 
 const QuestionPage = () => {
-  const { urlId } = useParams() as { urlId: string };
+  const { slug } = useParams() as { slug: string };
   const findQuestionApiCall = useQuery({
-    queryKey: [urlId],
+    queryKey: [slug],
     queryFn: async () => {
       try {
-        return await findQuestion(urlId);
+        return await findQuestion(slug);
       } catch (error) {
         return {};
       }
