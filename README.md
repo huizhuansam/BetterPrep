@@ -7,6 +7,10 @@ An experiment on how far a guy can push his software engineering skills. Also a 
 * Docker
 * Any modern web browser with JavaScript support
 
+## Setup
+
+1. From the root of the project repository, run `npm i`. This installs the required Prettier dependency which enables code formatting for the entire project.
+
 ## Running the application locally
 
 1. In the root of the project repository, create a directory called `docker-data`. This directory will be used to persist data for the docker containers.
