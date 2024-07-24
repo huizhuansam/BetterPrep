@@ -1,5 +1,3 @@
-import categoriesToArray from "./categoriesToArray";
-
 const processUserInput = ({
   questionTitle,
   questionDescription,
@@ -7,14 +5,14 @@ const processUserInput = ({
   complexity,
 }: {
   questionTitle: string;
+  categories: string[];
   questionDescription: string;
-  categories: string;
   complexity: string;
 }) => {
   return {
     title: questionTitle,
     description: questionDescription.trim(),
-    categories: categoriesToArray(categories),
+    categories,
     complexity,
   };
 };

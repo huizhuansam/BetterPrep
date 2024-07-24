@@ -3,6 +3,7 @@ import {
   Fieldset,
   Group,
   NativeSelect,
+  TagsInput,
   TextInput,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -30,7 +31,7 @@ const QuestionCreatorPage = () => {
 
   const [title, setTitle] = useState("");
   const [complexity, setComplexity] = useState("easy");
-  const [categories, setCategories] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -50,7 +51,7 @@ const QuestionCreatorPage = () => {
 
   const handleDiscard = () => {
     setTitle("");
-    setCategories("");
+    setCategories([]);
     setComplexity("easy");
     editor!.commands.clearContent();
   };
@@ -80,7 +81,6 @@ const QuestionCreatorPage = () => {
   const isFormValid = validateFormData({
     title: title,
     descriptionCharacterCount: editor!.storage.characterCount.characters(),
-    categories,
     complexity,
   });
 
@@ -96,11 +96,13 @@ const QuestionCreatorPage = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
         <DescriptionEditor editor={editor!} />
-        <TextInput
+        <TagsInput
+          label="Categories"
+          placeholder="Press enter to add a category, or delimit with commas (,)"
+          data={[]}
           value={categories}
-          placeholder="Add relevant categories; please delimit using commas (,)"
-          onChange={(e) => setCategories(e.target.value)}
-          mt="md"
+          onChange={setCategories}
+          clearable
         />
         <NativeSelect
           value={complexity}
