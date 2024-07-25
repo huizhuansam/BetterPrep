@@ -21,18 +21,18 @@ import StarterKit from "@tiptap/starter-kit";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { serializeError } from "serialize-error";
+import validator from "validator";
 import createQuestion from "../../api/createQuestion";
 import DescriptionEditor from "./DescriptionEditor";
-import processUserInput from "./processUserInput";
-import validateFormData from "./validateFormData";
 
 const QuestionCreatorPage = () => {
   const navigateTo = useNavigate();
+  const complexities = Object.freeze(["easy", "medium", "hard"]);
 
   const [title, setTitle] = useState("");
   const [complexity, setComplexity] = useState("easy");
   const [categories, setCategories] = useState<string[]>([]);
-  const editor = useEditor({
+  const descriptionEditor = useEditor({
     extensions: [
       StarterKit,
       Underline,
@@ -47,45 +47,50 @@ const QuestionCreatorPage = () => {
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Placeholder.configure({ placeholder: "Question description" }),
     ],
-  });
+  })!;
 
+  // user input validation logic
+  const isFormValid =
+    title.length > 0 &&
+    descriptionEditor.storage.characterCount.characters() > 0 &&
+    categories.length > 0 &&
+    complexities.includes(complexity);
+
+  const isFormEmpty =
+    title.length < 1 &&
+    categories.length < 1 &&
+    descriptionEditor.storage.characterCount.characters() < 1;
+
+  // form actions
   const handleDiscard = () => {
     setTitle("");
     setCategories([]);
     setComplexity("easy");
-    editor!.commands.clearContent();
+    descriptionEditor.commands.clearContent();
   };
 
   const handleSubmit = async () => {
-    try {
-      await createQuestion(
-        processUserInput({
-          questionTitle: title,
-          questionDescription: editor!.getHTML(),
-          categories,
-          complexity,
-        })
-      );
-      notifications.show({
-        message: "Question submitted!",
-      });
-      navigateTo("/questions");
-    } catch (error: any) {
+    const preprocessedUserInput = {
+      title: validator.trim(title),
+      description: validator.trim(descriptionEditor.getHTML()),
+      categories: categories
+        .map((c) => validator.trim(c))
+        .filter((c) => !validator.isEmpty(c)),
+      complexity,
+    };
+    const [_, error] = await createQuestion(preprocessedUserInput);
+    if (error) {
       notifications.show({
         message: "Error: " + JSON.stringify(serializeError(error).message),
         color: "red",
       });
+      return;
     }
+    notifications.show({
+      message: "Question submitted!",
+    });
+    navigateTo("/questions");
   };
-
-  const isFormValid = validateFormData({
-    title: title,
-    descriptionCharacterCount: editor!.storage.characterCount.characters(),
-    complexity,
-  });
-
-  const isFormPartiallyFilled =
-    title || categories || editor!.storage.characterCount.characters() > 0;
 
   return (
     <>
@@ -95,10 +100,13 @@ const QuestionCreatorPage = () => {
           placeholder="Question title"
           onChange={(e) => setTitle(e.target.value)}
         />
-        <DescriptionEditor editor={editor!} />
+        <DescriptionEditor editor={descriptionEditor} />
         <TagsInput
+          mt="md"
           label="Categories"
-          placeholder="Press enter to add a category, or delimit with commas (,)"
+          placeholder={
+            'Press "Enter" to add a category, or delimit each category with commas (,)'
+          }
           data={[]}
           value={categories}
           onChange={setCategories}
@@ -108,18 +116,14 @@ const QuestionCreatorPage = () => {
           value={complexity}
           label="Select suggested difficulty"
           onChange={(e) => setComplexity(e.target.value)}
-          data={["easy", "medium", "hard"]}
+          data={complexities}
           mt="md"
         />
         <Group align="center" grow mt="md">
           <Button color="green" disabled={!isFormValid} onClick={handleSubmit}>
             Submit
           </Button>
-          <Button
-            color="orange"
-            disabled={!isFormPartiallyFilled}
-            onClick={handleDiscard}
-          >
+          <Button color="orange" disabled={isFormEmpty} onClick={handleDiscard}>
             Discard
           </Button>
         </Group>
