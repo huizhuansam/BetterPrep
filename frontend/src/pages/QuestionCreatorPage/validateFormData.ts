@@ -1,19 +1,19 @@
 import validator from "validator";
 
 const validateFormData = ({
-  questionTitle,
-  markdownText,
+  title,
+  descriptionCharacterCount,
   categories,
   complexity,
 }: {
-  questionTitle: string;
-  markdownText: string;
+  title: string;
+  descriptionCharacterCount: number;
   categories: string;
   complexity: string;
 }) => {
   return (
-    !validator.isEmpty(questionTitle.trim()) &&
-    !validator.isEmpty(markdownText.trim()) &&
+    !validator.isEmpty(title.trim()) &&
+    descriptionCharacterCount > 0 &&
     !validator.isEmpty(categories.trim()) &&
     !validator.isEmpty(complexity.trim())
   );

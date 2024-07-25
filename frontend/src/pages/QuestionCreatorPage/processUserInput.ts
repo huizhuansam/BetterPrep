@@ -2,18 +2,18 @@ import categoriesToArray from "./categoriesToArray";
 
 const processUserInput = ({
   questionTitle,
-  markdownText,
+  questionDescription,
   categories,
   complexity,
 }: {
   questionTitle: string;
-  markdownText: string;
+  questionDescription: string;
   categories: string;
   complexity: string;
 }) => {
   return {
     title: questionTitle,
-    description: markdownText.trim(),
+    description: questionDescription.trim(),
     categories: categoriesToArray(categories),
     complexity,
   };

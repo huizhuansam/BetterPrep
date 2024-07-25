@@ -1,49 +1,66 @@
 import {
   Button,
-  Card,
-  Center,
-  Container,
-  Divider,
-  Grid,
+  Fieldset,
   Group,
   NativeSelect,
-  Stack,
-  Textarea,
   TextInput,
-  Title,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { Link } from "@mantine/tiptap";
+import CharacterCount from "@tiptap/extension-character-count";
+import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
+import Placeholder from "@tiptap/extension-placeholder";
+import SubScript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
+import TextAlign from "@tiptap/extension-text-align";
+import Underline from "@tiptap/extension-underline";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { useState } from "react";
-import Markdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { serializeError } from "serialize-error";
-import validator from "validator";
 import createQuestion from "../../api/createQuestion";
+import DescriptionEditor from "./DescriptionEditor";
 import processUserInput from "./processUserInput";
 import validateFormData from "./validateFormData";
 
 const QuestionCreatorPage = () => {
   const navigateTo = useNavigate();
-  const remainingViewportHeight = "calc(100vh - 60)";
 
-  const [questionTitle, setQuestionTitle] = useState("");
-  const [markdownText, setMarkdownText] = useState("");
+  const [title, setTitle] = useState("");
   const [complexity, setComplexity] = useState("easy");
   const [categories, setCategories] = useState("");
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      Link,
+      Superscript,
+      SubScript,
+      Highlight,
+      CharacterCount,
+      Image.configure({
+        allowBase64: true,
+      }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      Placeholder.configure({ placeholder: "Question description" }),
+    ],
+  });
 
   const handleDiscard = () => {
-    setQuestionTitle("");
-    setMarkdownText("");
+    setTitle("");
     setCategories("");
     setComplexity("easy");
+    editor!.commands.clearContent();
   };
 
   const handleSubmit = async () => {
     try {
       await createQuestion(
         processUserInput({
-          questionTitle,
-          markdownText,
+          questionTitle: title,
+          questionDescription: editor!.getHTML(),
           categories,
           complexity,
         })
@@ -61,105 +78,51 @@ const QuestionCreatorPage = () => {
   };
 
   const isFormValid = validateFormData({
-    questionTitle,
-    markdownText,
+    title: title,
+    descriptionCharacterCount: editor!.storage.characterCount.characters(),
     categories,
     complexity,
   });
 
+  const isFormPartiallyFilled =
+    title || categories || editor!.storage.characterCount.characters() > 0;
+
   return (
-    <Container fluid style={{ height: remainingViewportHeight }}>
-      <Grid grow align="stretch" style={{ flex: 1, overflow: "hidden" }}>
-        <Grid.Col span={6}>
-          <Center>
-            <Title order={2}>Enter question here</Title>
-          </Center>
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Center>
-            <Title order={2}>Preview</Title>
-          </Center>
-        </Grid.Col>
-        <Grid.Col
-          span={6}
-          style={{ display: "flex", flexDirection: "column", height: "100%" }}
-        >
-          <Stack align="stretch" style={{ flex: 1, overflow: "hidden" }}>
-            <Card
-              shadow="sm"
-              padding="lg"
-              withBorder
-              style={{ flex: 1, display: "flex", flexDirection: "column" }}
-            >
-              <Card.Section inheritPadding py="xs">
-                <TextInput
-                  value={questionTitle}
-                  placeholder="Question title"
-                  onChange={(e) => setQuestionTitle(e.target.value)}
-                />
-              </Card.Section>
-              <Divider />
-              <Card.Section inheritPadding py="xs">
-                <Textarea
-                  value={markdownText}
-                  onChange={(e) => setMarkdownText(e.target.value)}
-                  autosize
-                  placeholder="Question description (Markdown supported)"
-                />
-              </Card.Section>
-              <Divider />
-              <Card.Section inheritPadding py="xs">
-                <TextInput
-                  value={categories}
-                  placeholder="Add relevant categories; please delimit using commas (,)"
-                  onChange={(e) => setCategories(e.target.value)}
-                />
-              </Card.Section>
-              <Divider />
-              <Card.Section inheritPadding py="xs">
-                <NativeSelect
-                  value={complexity}
-                  label="Select suggested difficulty"
-                  onChange={(e) => setComplexity(e.target.value)}
-                  data={["easy", "medium", "hard"]}
-                />
-              </Card.Section>
-            </Card>
-          </Stack>
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Center>
-            <Card style={{ width: "100%" }} withBorder padding="lg">
-              <Card.Section inheritPadding py="xs">
-                <Markdown>
-                  {!validator.isEmpty(markdownText)
-                    ? markdownText
-                    : "*Your question description appears here*"}
-                </Markdown>
-              </Card.Section>
-              <Card.Section inheritPadding py="xs">
-                <Group align="center" grow>
-                  <Button
-                    color="green"
-                    disabled={!isFormValid}
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </Button>
-                  <Button
-                    color="orange"
-                    disabled={!isFormValid}
-                    onClick={handleDiscard}
-                  >
-                    Discard
-                  </Button>
-                </Group>
-              </Card.Section>
-            </Card>
-          </Center>
-        </Grid.Col>
-      </Grid>
-    </Container>
+    <>
+      <Fieldset legend="Submit A Question">
+        <TextInput
+          value={title}
+          placeholder="Question title"
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <DescriptionEditor editor={editor!} />
+        <TextInput
+          value={categories}
+          placeholder="Add relevant categories; please delimit using commas (,)"
+          onChange={(e) => setCategories(e.target.value)}
+          mt="md"
+        />
+        <NativeSelect
+          value={complexity}
+          label="Select suggested difficulty"
+          onChange={(e) => setComplexity(e.target.value)}
+          data={["easy", "medium", "hard"]}
+          mt="md"
+        />
+        <Group align="center" grow mt="md">
+          <Button color="green" disabled={!isFormValid} onClick={handleSubmit}>
+            Submit
+          </Button>
+          <Button
+            color="orange"
+            disabled={!isFormPartiallyFilled}
+            onClick={handleDiscard}
+          >
+            Discard
+          </Button>
+        </Group>
+      </Fieldset>
+    </>
   );
 };
 

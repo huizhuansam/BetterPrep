@@ -1,8 +1,7 @@
 import { Badge, Card, Divider, Group, Pill, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import Markdown from "react-markdown";
 import { useParams } from "react-router-dom";
-import findQuestion from "../api/findQuestion";
+import findQuestion from "../../api/findQuestion";
 
 const QuestionPage = () => {
   const { slug } = useParams() as { slug: string };
@@ -49,9 +48,7 @@ const QuestionPage = () => {
         </Group>
       </Card.Section>
       <Divider />
-      <Card.Section inheritPadding py="xs">
-        <Markdown>{description}</Markdown>
-      </Card.Section>
+      <Card.Section inheritPadding py="xs"></Card.Section>
       <Divider />
       <Card.Section inheritPadding py="xs">
         <Group>
