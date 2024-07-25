@@ -6,7 +6,7 @@ import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import QuestionCreatorPage from "./pages/QuestionCreatorPage/QuestionCreatorPage";
 import QuestionListPage from "./pages/QuestionListPage/QuestionListPage";
-import QuestionPage from "./pages/QuestionPage";
+import QuestionPage from "./pages/QuestionPage/QuestionPage";
 import MyProfilePage from "./pages/MyProfilePage/MyProfilePage";
 import ProfileEditorPage from "./pages/ProfileEditorPage/ProfileEditorPage";
 
