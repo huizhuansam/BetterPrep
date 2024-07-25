@@ -11,7 +11,6 @@ export class QuestionsService {
   ) {}
 
   async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
-    // create url id
     const slug = createQuestionDto.title
       .trim()
       .toLowerCase()
