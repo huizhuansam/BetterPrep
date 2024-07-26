@@ -10,7 +10,7 @@ services:
       - ./frontend:/home/node/code
       - /home/node/code/node_modules
     environment:
-      - VITE_QUESTION_SERVICE_PROXY=http://localhost:3000
+      - VITE_API_GATEWAY=http://localhost:4000/api
 
   question-service:
     build: ./question-service

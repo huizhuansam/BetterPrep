@@ -1,7 +1,7 @@
 const findQuestion = async (slug: string) => {
   const question = await fetch(
     `${
-      import.meta.env.VITE_QUESTION_SERVICE_PROXY || "http://localhost:3000"
+      import.meta.env.VITE_API_GATEWAY || "http://localhost:3000"
     }/questions/${slug}`
   );
   if (!question.ok) {
