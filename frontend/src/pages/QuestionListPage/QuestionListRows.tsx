@@ -6,7 +6,17 @@ const QuestionListRows = ({ questionList }: { questionList: Array<any> }) => {
   return (
     <>
       {questionList.map((question: any, questionIndex: number) => {
-        const { complexity, title, categories, slug } = question;
+        const {
+          complexity,
+          title,
+          categories,
+          slug,
+        }: {
+          complexity: string;
+          title: string;
+          categories: string[];
+          slug: string;
+        } = question;
         return (
           <Table.Tr
             key={questionIndex}
@@ -16,9 +26,13 @@ const QuestionListRows = ({ questionList }: { questionList: Array<any> }) => {
             <Table.Td>{complexity}</Table.Td>
             <Table.Td>
               <Pill.Group>
-                {categories.map((category: any, categoryIndex: number) => (
-                  <Pill key={categoryIndex}>{category}</Pill>
-                ))}
+                {categories.length < 1 ? (
+                  <Pill>uncategorized</Pill>
+                ) : (
+                  categories.map((category: any, categoryIndex: number) => (
+                    <Pill key={categoryIndex}>{category}</Pill>
+                  ))
+                )}
               </Pill.Group>
             </Table.Td>
           </Table.Tr>

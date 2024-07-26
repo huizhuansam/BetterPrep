@@ -11,10 +11,10 @@ const createQuestion = async (question: any) => {
     requestOptions
   );
   const responseBody = response.json();
-  if (!response.ok) {
-    throw Error((await responseBody).message);
-  }
-  return responseBody;
+  return [
+    responseBody,
+    response.ok ? null : Error((await responseBody).message),
+  ];
 };
 
 export default createQuestion;

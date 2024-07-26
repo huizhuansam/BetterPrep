@@ -1,10 +1,11 @@
-import { Badge, Card, Divider, Group, Pill, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import findQuestion from "../../api/findQuestion";
+import QuestionPageContent from "./QuestionPageContent";
 
 const QuestionPage = () => {
   const { slug } = useParams() as { slug: string };
+
   const findQuestionApiCall = useQuery({
     queryKey: [slug],
     queryFn: async () => {
@@ -15,53 +16,14 @@ const QuestionPage = () => {
       }
     },
   });
+
   const question = findQuestionApiCall.data;
   if (!question) {
     // TODO: serve 404 page
     return <></>;
   }
 
-  const {
-    title,
-    description,
-    categories,
-    complexity,
-  }: {
-    title: string;
-    description: string;
-    categories: Array<string>;
-    complexity: "easy" | "medium" | "hard";
-  } = question;
-  const complexityToColorMap: Map<string, string> = new Map([
-    ["easy", "green"],
-    ["medium", "yellow"],
-    ["hard", "red"],
-  ]);
-  return (
-    <Card shadow="sm" padding="lg" withBorder>
-      <Card.Section inheritPadding py="xs">
-        <Group justify="space-between">
-          <Title>{title}</Title>
-          <Badge color={complexityToColorMap.get(complexity)}>
-            {complexity}
-          </Badge>
-        </Group>
-      </Card.Section>
-      <Divider />
-      <Card.Section inheritPadding py="xs"></Card.Section>
-      <Divider />
-      <Card.Section inheritPadding py="xs">
-        <Group>
-          <Text>Categories:</Text>
-          <Pill.Group>
-            {categories.map((category: any, categoryIndex: number) => (
-              <Pill key={categoryIndex}>{category}</Pill>
-            ))}
-          </Pill.Group>
-        </Group>
-      </Card.Section>
-    </Card>
-  );
+  return <QuestionPageContent question={question} />;
 };
 
 export default QuestionPage;
