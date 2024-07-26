@@ -1,14 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
 import LoginForm from "./forms/LoginForm";
 import SignupForm from "./forms/SignupForm";
 import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
+import MyProfilePage from "./pages/MyProfilePage/MyProfilePage";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+import ProfileEditorPage from "./pages/ProfileEditorPage/ProfileEditorPage";
 import QuestionCreatorPage from "./pages/QuestionCreatorPage/QuestionCreatorPage";
 import QuestionListPage from "./pages/QuestionListPage/QuestionListPage";
 import QuestionPage from "./pages/QuestionPage/QuestionPage";
-import MyProfilePage from "./pages/MyProfilePage/MyProfilePage";
-import ProfileEditorPage from "./pages/ProfileEditorPage/ProfileEditorPage";
 
 const AppRouter = () => {
   return (
@@ -25,6 +25,7 @@ const AppRouter = () => {
           <Route path="/my-profile" element={<MyProfilePage />} />
           <Route path="/my-profile/editor" element={<ProfileEditorPage />} />
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
