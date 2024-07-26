@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import LoginForm from "./forms/LoginForm";
 import SignupForm from "./forms/SignupForm";
 import AppLayout from "./layouts/AppLayout";
@@ -14,6 +14,7 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route element={<AuthLayout />}>
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
