@@ -12,9 +12,22 @@ services:
     environment:
       - VITE_API_GATEWAY=http://localhost:4000/api
 
+  gateway-service:
+    build: ./gateway-service
+    networks:
+      - app-network
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./gateway-service:/home/golang/code
+    environment:
+      - QUESTION_SERVICE_HOSTNAME=http://question-service:3000
+      - FRONTEND_SERVICE_HOSTNAME=http://localhost:5173
+
   question-service:
     build: ./question-service
     networks:
+      - app-network
       - question-network
     ports:
       - "3000:3000"
@@ -25,6 +38,7 @@ services:
       - question-service-db
     environment:
       - MONGO_CONNECTION_STRING=mongodb://dev:password@question-service-db:27017
+      - API_GATEWAY_HOSTNAME=http://gateway-service:4000
 
   question-service-db:
     image: mongo
@@ -42,6 +56,8 @@ services:
 
 networks:
   question-network:
+    driver: bridge
+  app-network:
     driver: bridge
 
 volumes:
