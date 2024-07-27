@@ -7,7 +7,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import AppRouter from "./routes/AppRouter";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // todo: adjust
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  },
+});
 
 const App = () => {
   return (
