@@ -39,7 +39,7 @@ const SignupForm = () => {
   ];
 
   const getPasswordStrength = (password: string) => {
-    let multiplier = password.length > 5 ? 0 : 1;
+    let multiplier = 5 < password.length && password.length < 73 ? 0 : 1;
     passwordRequirements.forEach((requirement) => {
       if (!requirement.re.test(password)) {
         multiplier += 1;
