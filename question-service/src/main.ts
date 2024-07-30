@@ -5,12 +5,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // TODO: configure CORS for production
   const corsOptions = {
-    // docker mode: allow from locally running api gateway
-    // local mode: allow from frontend
-    origin: process.env.API_GATEWAY_HOSTNAME || 'http://localhost:5173',
-    methods: 'GET, POST',
+    origin: process.env.FRONTEND_SERVICE_CONNECTION_STRING,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   };
-  console.log(corsOptions);
   app.enableCors(corsOptions);
   await app.listen(3000);
 }
