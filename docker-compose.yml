@@ -21,8 +21,8 @@ services:
     volumes:
       - ./gateway-service:/home/golang/code
     environment:
-      - QUESTION_SERVICE_HOSTNAME=http://question-service:3000
-      - FRONTEND_SERVICE_HOSTNAME=http://localhost:5173
+      - QUESTION_SERVICE_CONNECTION_STRING=http://question-service:3000
+      - FRONTEND_SERVICE_CONNECTION_STRING=http://localhost:5173
 
   question-service:
     build: ./question-service
@@ -38,7 +38,7 @@ services:
       - question-service-db
     environment:
       - MONGO_CONNECTION_STRING=mongodb://dev:password@question-service-db:27017
-      - API_GATEWAY_HOSTNAME=http://gateway-service:4000
+      - FRONTEND_SERVICE_CONNECTION_STRING=http://localhost:5173
 
   question-service-db:
     image: mongo
