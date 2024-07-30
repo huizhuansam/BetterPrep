@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import LoginForm from "../forms/LoginForm";
-import SignupForm from "../forms/SignupForm";
+import SignupForm from "../forms/SignupForm/SignupForm";
 import AppLayout from "../layouts/AppLayout";
 import AuthLayout from "../layouts/AuthLayout";
 import MyProfilePage from "../pages/MyProfilePage/MyProfilePage";
@@ -13,7 +13,7 @@ import RouteGuard from "./RouteGuard";
 
 const AppRouter = () => {
   // TOGGLE THIS TO SWITCH BETWEEN AUTH/NOT AUTH MODES
-  const isAuthenticated = true;
+  const isAuthenticated = false;
   return (
     <BrowserRouter>
       <Routes>

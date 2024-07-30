@@ -1,23 +1,27 @@
 import {
   Anchor,
-  Box,
   Button,
   Center,
   Checkbox,
   Fieldset,
+  LoadingOverlay,
   PasswordInput,
   Popover,
   Progress,
-  rem,
   Text,
   TextInput,
   Title,
 } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
-import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
+import PasswordRequirement from "./PasswordRequirement";
+import {
+  getPasswordStrength,
+  passwordRequirements,
+} from "./passwordValidation";
+import signup from "../../api/signup";
 
 const SignupForm = () => {
   const navigateTo = useNavigate();
@@ -29,52 +33,10 @@ const SignupForm = () => {
   const [password, setPassword] = useState("");
   const [retypedPassword, setRetypedPassword] = useState("");
   const [isAgreeToTerms, setAgreeToTerms] = useState(false);
+  const [isLoadingOverlayVisible, setIsLoadingOverlayVisible] = useState(false);
+  const [isAccountAlreadyExists, setIsAccountAlreadyExists] = useState(false);
 
   // password validation
-  const passwordRequirements = [
-    { re: /[0-9]/, label: "Includes number" },
-    { re: /[a-z]/, label: "Includes lowercase letter" },
-    { re: /[A-Z]/, label: "Includes uppercase letter" },
-    { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: "Includes special symbol" },
-  ];
-
-  const getPasswordStrength = (password: string) => {
-    let multiplier = 5 < password.length && password.length < 73 ? 0 : 1;
-    passwordRequirements.forEach((requirement) => {
-      if (!requirement.re.test(password)) {
-        multiplier += 1;
-      }
-    });
-    return Math.max(
-      100 - (100 / (passwordRequirements.length + 1)) * multiplier,
-      10
-    );
-  };
-
-  const PasswordRequirement = ({
-    meets,
-    label,
-  }: {
-    meets: boolean;
-    label: string;
-  }) => {
-    return (
-      <Text
-        c={meets ? "teal" : "red"}
-        style={{ display: "flex", alignItems: "center" }}
-        mt={7}
-        size="sm"
-      >
-        {meets ? (
-          <CheckIcon style={{ width: rem(14), height: rem(14) }} />
-        ) : (
-          <Cross1Icon style={{ width: rem(14), height: rem(14) }} />
-        )}{" "}
-        <Box ml={10}>{label}</Box>
-      </Text>
-    );
-  };
-
   const passwordChecks = passwordRequirements.map((requirement, index) => (
     <PasswordRequirement
       key={index}
@@ -105,12 +67,20 @@ const SignupForm = () => {
     isUsernameValid;
 
   // form actions
-  const handleSignUp = () => {
+  const handleSignup = async () => {
+    setIsLoadingOverlayVisible(true);
+    const loginApiCall = await signup(emailAddress, username, password);
+    setIsLoadingOverlayVisible(false);
+    if (!loginApiCall.ok) {
+      setIsAccountAlreadyExists(true);
+      return;
+    }
     navigateTo("/questions");
   };
 
   return (
-    <Fieldset radius="md" w={viewportWidth / 4}>
+    <Fieldset radius="md" w={viewportWidth / 4} pos="relative">
+      <LoadingOverlay visible={isLoadingOverlayVisible} />
       <Center>
         <Title order={2}>Sign up</Title>
       </Center>
@@ -126,7 +96,13 @@ const SignupForm = () => {
         placeholder="Email address"
         variant="filled"
         onChange={(e) => setEmailAddress(e.target.value)}
-        error={!isEmailValid ? "Invalid email address" : false}
+        error={
+          !isEmailValid
+            ? "Invalid email address"
+            : isAccountAlreadyExists
+            ? "Account already exists"
+            : false
+        }
       />
       <TextInput
         mt="md"
@@ -134,7 +110,13 @@ const SignupForm = () => {
         placeholder="Username"
         variant="filled"
         onChange={(e) => setUsername(e.target.value)}
-        error={!isUsernameValid ? "Username must be alphanumeric" : false}
+        error={
+          !isUsernameValid
+            ? "Username must be alphanumeric"
+            : isAccountAlreadyExists
+            ? "Account already exists"
+            : false
+        }
       />
       <Popover
         opened={isPasswordPopoverOpened}
@@ -192,7 +174,7 @@ const SignupForm = () => {
         mt="md"
         fullWidth
         disabled={!isFormInputValid}
-        onClick={handleSignUp}
+        onClick={handleSignup}
       >
         Create Account
       </Button>
