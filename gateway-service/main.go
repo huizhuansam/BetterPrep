@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/huizhuansam/BetterPrep/config"
 	"github.com/huizhuansam/BetterPrep/database"
+	"github.com/huizhuansam/BetterPrep/model"
 	"github.com/huizhuansam/BetterPrep/router"
 )
 
@@ -16,6 +17,7 @@ var configuration config.Config
 func init() {
 	configuration = *config.New()
 	database.ConnectDB(configuration)
+	database.DB.AutoMigrate(&model.User{})
 }
 
 func main() {

@@ -3,60 +3,74 @@ package handler
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/huizhuansam/BetterPrep/database"
+	"github.com/huizhuansam/BetterPrep/model"
 	"golang.org/x/crypto/bcrypt"
 )
 
+func getUserByUsername(username string) (*model.User, error) {
+	var user model.User
+	if err := database.DB.Where(&model.User{Username: username}).First(user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func addUserToDb(user *model.User) error {
+	if err := database.DB.Create(&user).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func Signup(c *fiber.Ctx) error {
-	var checkUserExists = func(username string, emailAddress string) error {
-		return nil
-	}
-	var addUserToDb = func(emailAddress string, username string, hashedPassword []byte) error {
-		return nil
-	}
-	credentials := struct {
+	type SignupInput struct {
 		EmailAddress string `json:"emailAddress" validate:"required,email"`
 		Username     string `json:"username" validate:"required"`
 		Password     string `json:"password" validate:"required,min=6,max=72"`
-	}{}
-	if err := c.BodyParser(&credentials); err != nil {
+	}
+	signupInput := new(SignupInput)
+	if err := c.BodyParser(&signupInput); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
-	if err := validator.New().Struct(credentials); err != nil {
+	if err := validator.New().Struct(signupInput); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
-	if err := checkUserExists(credentials.EmailAddress, credentials.Username); err != nil {
-		return c.Status(fiber.StatusUnauthorized).SendString("User already exists")
-	}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(credentials.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(signupInput.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 	}
-	if err := addUserToDb(credentials.EmailAddress, credentials.Username, hashedPassword); err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+	user := model.User{
+		EmailAddress:   signupInput.EmailAddress,
+		Username:       signupInput.Username,
+		HashedPassword: hashedPassword,
+	}
+	if err := addUserToDb(&user); err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("User aleady exists")
 	}
 	return c.SendStatus(fiber.StatusCreated)
 }
 
 func Login(c *fiber.Ctx) error {
-	var getHashedPasswordFromDb = func(username string) ([]byte, error) {
-		return []byte{}, nil
-	}
-	credentials := struct {
+	type LoginInput struct {
 		Username string `json:"username" validate:"required"`
 		Password string `json:"password" validate:"required"`
-	}{}
-	if err := c.BodyParser(&credentials); err != nil {
+	}
+	loginInput := new(LoginInput)
+	if err := c.BodyParser(&loginInput); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
-	if err := validator.New().Struct(credentials); err != nil {
+	if err := validator.New().Struct(loginInput); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
-	hashedPassword, err := getHashedPasswordFromDb(credentials.Username)
+	username := loginInput.Username
+	user, err := getUserByUsername(username)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+		return c.Status(fiber.StatusUnauthorized).SendString("Incorrect credentials")
 	}
-	if err := bcrypt.CompareHashAndPassword(hashedPassword, []byte(credentials.Password)); err != nil {
-		return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
+	password := loginInput.Password
+	if err := bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password)); err != nil {
+		return c.Status(fiber.StatusUnauthorized).SendString("Incorrect credentials")
 	}
-	return c.Status(fiber.StatusOK).JSON(credentials.Username)
+	return c.Status(fiber.StatusOK).JSON(username)
 }
