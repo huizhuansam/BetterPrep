@@ -24,6 +24,17 @@ services:
       - QUESTION_SERVICE_CONNECTION_STRING=http://question-service:3000
       - FRONTEND_SERVICE_CONNECTION_STRING=http://localhost:5173
 
+  auth-db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker-data/auth-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=developer
+      - POSTGRES_DB=auth
+
   question-service:
     build: ./question-service
     networks:
@@ -48,7 +59,7 @@ services:
       - "27017:27017"
     volumes:
       - type: bind
-        source: ./docker-data
+        source: ./docker-data/question-service-db
         target: /data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=dev
