@@ -10,11 +10,44 @@ services:
       - ./frontend:/home/node/code
       - /home/node/code/node_modules
     environment:
-      - VITE_QUESTION_SERVICE_PROXY=http://localhost:3000
+      - VITE_API_GATEWAY=http://localhost:4000/api
+
+  gateway-service:
+    build: ./gateway-service
+    networks:
+      - app-network
+      - auth-network
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./gateway-service:/home/golang/code
+    environment:
+      - PORT_NUMBER=4000
+      - QUESTION_SERVICE_CONNECTION_STRING=http://question-service:3000
+      - FRONTEND_SERVICE_CONNECTION_STRING=http://localhost:5173
+      - AUTH_DB_HOST=auth-db
+      - AUTH_DB_NAME=auth
+      - AUTH_DB_PORT_NUMBER=5432
+      - AUTH_DB_USER=developer
+      - AUTH_DB_PASSWORD=password
+
+  auth-db:
+    image: postgres:16-alpine
+    networks:
+      - auth-network
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker-data/auth-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=auth
+      - POSTGRES_USER=developer
+      - POSTGRES_PASSWORD=password
 
   question-service:
     build: ./question-service
     networks:
+      - app-network
       - question-network
     ports:
       - "3000:3000"
@@ -25,6 +58,7 @@ services:
       - question-service-db
     environment:
       - MONGO_CONNECTION_STRING=mongodb://dev:password@question-service-db:27017
+      - FRONTEND_SERVICE_CONNECTION_STRING=http://localhost:5173
 
   question-service-db:
     image: mongo
@@ -34,7 +68,7 @@ services:
       - "27017:27017"
     volumes:
       - type: bind
-        source: ./docker-data
+        source: ./docker-data/question-service-db
         target: /data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=dev
@@ -42,6 +76,10 @@ services:
 
 networks:
   question-network:
+    driver: bridge
+  app-network:
+    driver: bridge
+  auth-network:
     driver: bridge
 
 volumes:

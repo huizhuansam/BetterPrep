@@ -1,14 +1,15 @@
 const findAllQuestions = async () => {
-  const questions = await fetch(
-    `${
-      import.meta.env.VITE_QUESTION_SERVICE_PROXY || "http://localhost:3000"
-    }/questions`
+  const requestOptions = {
+    method: "GET",
+  };
+  const response = await fetch(
+    `${import.meta.env.VITE_API_GATEWAY || "http://localhost:3000"}/questions`,
+    requestOptions
   );
-  if (!questions.ok) {
-    // TODO: handle errors
-    return undefined;
+  if (!response.ok) {
+    throw new Error(String(response.status));
   }
-  return questions.json();
+  return response.json();
 };
 
 export default findAllQuestions;

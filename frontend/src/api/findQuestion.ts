@@ -1,13 +1,17 @@
-const findQuestion = async (slug: string) => {
-  const question = await fetch(
+const findQuestion = async ({ slug }: { slug: string }) => {
+  const requestOptions = {
+    method: "GET",
+  };
+  const response = await fetch(
     `${
-      import.meta.env.VITE_QUESTION_SERVICE_PROXY || "http://localhost:3000"
-    }/questions/${slug}`
+      import.meta.env.VITE_API_GATEWAY || "http://localhost:3000"
+    }/questions/${slug}`,
+    requestOptions
   );
-  if (!question.ok) {
-    throw Error(question.statusText);
+  if (!response.ok) {
+    throw new Error(String(response.status));
   }
-  return question.json();
+  return response.json();
 };
 
 export default findQuestion;

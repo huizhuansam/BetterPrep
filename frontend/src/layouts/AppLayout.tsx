@@ -1,17 +1,14 @@
 import {
-  NavLink,
   AppShell,
-  Burger,
-  Group,
   Avatar,
-  Center,
+  Burger,
   Container,
-  Space,
+  Group,
+  NavLink,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { ExitIcon } from "@radix-ui/react-icons";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useDisclosure } from "@mantine/hooks";
-
 import LogoStatic from "../assets/LogoStatic";
 import NavTabs from "../navigations/NavTabs";
 
@@ -19,7 +16,12 @@ const AppLayout = () => {
   const navigate = useNavigate();
   const currPath: string = useLocation().pathname;
 
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle: toggleNavVisibility }] = useDisclosure();
+
+  const handleLogout = () => {
+    toggleNavVisibility();
+    navigate("/login");
+  };
 
   return (
     <AppShell
@@ -36,7 +38,7 @@ const AppLayout = () => {
           <Group h="100%" px="md" justify="space-between">
             <LogoStatic />
             <NavTabs />
-            <Burger opened={opened} onClick={toggle} size="sm" />
+            <Burger opened={opened} onClick={toggleNavVisibility} size="sm" />
           </Group>
         </Container>
       </AppShell.Header>
@@ -50,7 +52,7 @@ const AppLayout = () => {
           rightSection={<Avatar size="md" />}
           label="My Profile"
           onClick={() => {
-            toggle();
+            toggleNavVisibility();
             navigate("/my-profile");
           }}
           active={currPath == "/my-profile"}
@@ -62,6 +64,7 @@ const AppLayout = () => {
             </Avatar>
           }
           label="Log Out"
+          onClick={handleLogout}
         />
       </AppShell.Aside>
     </AppShell>
