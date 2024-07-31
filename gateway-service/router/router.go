@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/huizhuansam/BetterPrep/handler"
+	"github.com/huizhuansam/BetterPrep/middleware"
 )
 
 func SetupRoutes(app *fiber.App) {
@@ -15,7 +16,7 @@ func SetupRoutes(app *fiber.App) {
 
 	// question
 	questionRouter := api.Group("/questions")
-	questionRouter.Post("/", handler.AddQuestion)
-	questionRouter.Get("/", handler.GetQuestions)
-	questionRouter.Get("/:slug", handler.GetQuestion)
+	questionRouter.Post("/", middleware.Protected(), handler.AddQuestion)
+	questionRouter.Get("/", middleware.Protected(), handler.GetQuestions)
+	questionRouter.Get("/:slug", middleware.Protected(), handler.GetQuestion)
 }
