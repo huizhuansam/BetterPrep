@@ -7,20 +7,38 @@ import {
   NavLink,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { ExitIcon } from "@radix-ui/react-icons";
+import { useContext } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import logout from "../api/logout";
 import LogoStatic from "../assets/LogoStatic";
+import LoggedInUserContext from "../context/LoggedInUserContext";
 import NavTabs from "../navigations/NavTabs";
 
 const AppLayout = () => {
-  const navigate = useNavigate();
+  const navigateTo = useNavigate();
   const currPath: string = useLocation().pathname;
 
   const [opened, { toggle: toggleNavVisibility }] = useDisclosure();
+  const [, setLoggedInUser] = useContext(LoggedInUserContext);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const response = await logout();
+    if (!response.ok) {
+      notifications.show({
+        message: "Error: unable to log out",
+        color: "red",
+      });
+      return;
+    }
+    setLoggedInUser(null);
     toggleNavVisibility();
-    navigate("/login");
+    notifications.show({
+      message: "Logged out",
+      color: "green",
+    });
+    navigateTo("/login");
   };
 
   return (
@@ -53,7 +71,7 @@ const AppLayout = () => {
           label="My Profile"
           onClick={() => {
             toggleNavVisibility();
-            navigate("/my-profile");
+            navigateTo("/my-profile");
           }}
           active={currPath == "/my-profile"}
         />
@@ -64,7 +82,7 @@ const AppLayout = () => {
             </Avatar>
           }
           label="Log Out"
-          onClick={handleLogout}
+          onClick={async () => await handleLogout()}
         />
       </AppShell.Aside>
     </AppShell>

@@ -10,12 +10,15 @@ import {
   Title,
 } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
 import login from "../api/login";
+import me from "../api/me";
+import LoggedInUserContext from "../context/LoggedInUserContext";
 
 const LoginForm = () => {
+  const [, setLoggedInUser] = useContext(LoggedInUserContext);
   const navigateTo = useNavigate();
   const { width: viewportWidth } = useViewportSize();
 
@@ -44,6 +47,8 @@ const LoginForm = () => {
       setIsUserSubmitWrongCredentials(true);
       return;
     }
+    const user = await me();
+    setLoggedInUser(user);
     navigateTo("/questions");
   };
 

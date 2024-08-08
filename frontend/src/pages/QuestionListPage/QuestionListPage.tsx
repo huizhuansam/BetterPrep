@@ -10,6 +10,7 @@ const QuestionListPage = () => {
     queryFn: findAllQuestions,
   });
   const questionList = findAllQuestionsApiCall.data || [];
+
   return (
     <Card shadow="sm" padding="lg" withBorder>
       <Card.Section inheritPadding py="xs">

@@ -1,8 +1,12 @@
 package handler
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/huizhuansam/BetterPrep/database"
 	"github.com/huizhuansam/BetterPrep/model"
 	"golang.org/x/crypto/bcrypt"
@@ -10,7 +14,7 @@ import (
 
 func getUserByUsername(username string) (*model.User, error) {
 	var user model.User
-	if err := database.DB.Where(&model.User{Username: username}).First(user).Error; err != nil {
+	if err := database.DB.Where(&model.User{Username: username}).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -21,6 +25,18 @@ func addUserToDb(user *model.User) error {
 		return err
 	}
 	return nil
+}
+
+func createToken(user *model.User) (string, error) {
+	now := time.Now()
+	// token valid for 1 hour
+	validUntil := now.Add(time.Hour * 1).Unix()
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
+	claims["username"] = user.Username
+	claims["exp"] = validUntil
+	secret := configuration.JwtSecret
+	return token.SignedString([]byte(secret))
 }
 
 func Signup(c *fiber.Ctx) error {
@@ -48,7 +64,16 @@ func Signup(c *fiber.Ctx) error {
 	if err := addUserToDb(&user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("User aleady exists")
 	}
-	return c.SendStatus(fiber.StatusCreated)
+	token, err := createToken(&user)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+	}
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = token
+	cookie.HTTPOnly = true
+	c.Cookie(cookie)
+	return c.SendStatus(fiber.StatusOK)
 }
 
 func Login(c *fiber.Ctx) error {
@@ -72,5 +97,51 @@ func Login(c *fiber.Ctx) error {
 	if err := bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password)); err != nil {
 		return c.Status(fiber.StatusUnauthorized).SendString("Incorrect credentials")
 	}
-	return c.Status(fiber.StatusOK).JSON(username)
+	token, err := createToken(user)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+	}
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = token
+	cookie.HTTPOnly = true
+	c.Cookie(cookie)
+	return c.SendStatus(fiber.StatusOK)
+}
+
+func Logout(c *fiber.Ctx) error {
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = ""
+	cookie.HTTPOnly = true
+	c.Cookie(cookie)
+	return c.SendStatus(fiber.StatusOK)
+}
+
+func Me(c *fiber.Ctx) error {
+	tokenString := c.Cookies("token")
+	if len(tokenString) < 1 {
+		return c.JSON(fiber.Map{
+			"user": nil,
+		})
+	}
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		secret := configuration.JwtSecret
+		return []byte(secret), nil
+	})
+	if err != nil {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+	return c.JSON(fiber.Map{
+		"user": fiber.Map{
+			"username": claims["username"],
+		},
+	})
 }

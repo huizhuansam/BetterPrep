@@ -24,8 +24,9 @@ func main() {
 	app := fiber.New()
 	// TODO: configure CORS for production
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: configuration.FrontendServiceConnectionString,
-		AllowMethods: "GET,POST,PUT,DELETE",
+		AllowOrigins:     configuration.FrontendServiceConnectionString,
+		AllowMethods:     "GET,POST,PUT,DELETE",
+		AllowCredentials: true,
 	}))
 	router.SetupRoutes(app)
 	log.Fatal(app.Listen(fmt.Sprintf(":%d", configuration.PortNumber)))

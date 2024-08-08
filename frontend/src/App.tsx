@@ -4,8 +4,10 @@ import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
 import "@mantine/tiptap/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+import { useState } from "react";
+import LoggedInUserContext from "./context/LoggedInUserContext";
 import AppRouter from "./routes/AppRouter";
+import { User } from "./types/APIResponsesTypes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,13 +20,16 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+  const loggedInUser = useState<User | null>(null);
   return (
-    <MantineProvider>
-      <QueryClientProvider client={queryClient}>
-        <Notifications position="top-right" />
-        <AppRouter />
-      </QueryClientProvider>
-    </MantineProvider>
+    <LoggedInUserContext.Provider value={loggedInUser}>
+      <MantineProvider>
+        <QueryClientProvider client={queryClient}>
+          <Notifications position="top-right" />
+          <AppRouter />
+        </QueryClientProvider>
+      </MantineProvider>
+    </LoggedInUserContext.Provider>
   );
 };
 

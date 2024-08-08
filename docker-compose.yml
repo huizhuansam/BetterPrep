@@ -25,6 +25,7 @@ services:
       - PORT_NUMBER=4000
       - QUESTION_SERVICE_CONNECTION_STRING=http://question-service:3000
       - FRONTEND_SERVICE_CONNECTION_STRING=http://localhost:5173
+      - JWT_SECRET=honeypot
       - AUTH_DB_HOST=auth-db
       - AUTH_DB_NAME=auth
       - AUTH_DB_PORT_NUMBER=5432
