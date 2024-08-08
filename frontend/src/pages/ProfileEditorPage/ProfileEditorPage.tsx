@@ -1,18 +1,18 @@
 import {
+  ActionIcon,
   Avatar,
   Button,
   Card,
   Center,
   Divider,
   Grid,
-  Stack,
-  Title,
-  Text,
-  TextInput,
   Group,
   Menu,
   Overlay,
-  ActionIcon,
+  Stack,
+  Text,
+  TextInput,
+  Title,
 } from "@mantine/core";
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
@@ -25,6 +25,7 @@ const ProfileEditorPage = () => {
     name: "Hui Zhuan",
     emailAddress: "huizhuansam@hotmail.com",
   };
+
   return (
     <Grid>
       <Grid.Col span={4}>

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const NotFoundPage = () => {
   const { height: viewportHeight } = useViewportSize();
   const navigate = useNavigate();
+
   return (
     <Center h={viewportHeight}>
       <Stack justify="center" align="center">

@@ -6,10 +6,7 @@ const findAllQuestions = async () => {
       credentials: "include",
     }
   );
-  if (!response.ok) {
-    throw new Error(String(response.status));
-  }
-  return response.json();
+  return response;
 };
 
 export default findAllQuestions;

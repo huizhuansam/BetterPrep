@@ -13,20 +13,25 @@ import {
   Title,
 } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
+import me from "../../api/me";
+import signup from "../../api/signup";
+import LoggedInUserContext from "../../context/LoggedInUserContext";
 import PasswordRequirement from "./PasswordRequirement";
 import {
   getPasswordStrength,
   passwordRequirements,
 } from "./passwordValidation";
-import signup from "../../api/signup";
 
 const SignupForm = () => {
+  // setup
   const navigateTo = useNavigate();
   const { width: viewportWidth } = useViewportSize();
+  const [, setLoggedInUser] = useContext(LoggedInUserContext);
 
+  // state
   const [emailAddress, setEmailAddress] = useState("");
   const [username, setUsername] = useState("");
   const [isPasswordPopoverOpened, setPasswordPopoverOpened] = useState(false);
@@ -75,6 +80,8 @@ const SignupForm = () => {
       setIsAccountAlreadyExists(true);
       return;
     }
+    const user = await me();
+    setLoggedInUser(user);
     navigateTo("/questions");
   };
 
@@ -164,8 +171,7 @@ const SignupForm = () => {
         mt="md"
         label={
           <Text>
-            {/* TODO: write terms of service */}I agree to the{" "}
-            <Anchor href="/">terms of service</Anchor>
+            I agree to the <Anchor href="/">terms of service</Anchor>
           </Text>
         }
         onChange={(event) => setAgreeToTerms(event.currentTarget.checked)}

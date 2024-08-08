@@ -1,15 +1,22 @@
 import { Card, Table, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-
 import findAllQuestions from "../../api/findAllQuestions";
 import QuestionListRows from "./QuestionListRows";
 
 const QuestionListPage = () => {
   const findAllQuestionsApiCall = useQuery({
     queryKey: ["questions"],
-    queryFn: findAllQuestions,
+    queryFn: async () => {
+      const questions = await findAllQuestions();
+      if (!questions.ok) {
+        return [];
+      }
+      return questions.json();
+    },
   });
-  const questionList = findAllQuestionsApiCall.data || [];
+  const questionList = findAllQuestionsApiCall.isLoading
+    ? []
+    : findAllQuestionsApiCall.data;
 
   return (
     <Card shadow="sm" padding="lg" withBorder>

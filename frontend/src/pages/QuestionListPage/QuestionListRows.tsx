@@ -1,7 +1,7 @@
 import { Pill, Table } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
-const QuestionListRows = ({ questionList }: { questionList: Array<any> }) => {
+const QuestionListRows = ({ questionList }: { questionList: any[] }) => {
   const navigateTo = useNavigate();
   return (
     <>

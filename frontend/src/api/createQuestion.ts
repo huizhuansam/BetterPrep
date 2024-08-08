@@ -1,4 +1,4 @@
-const createQuestion = async (question: any) => {
+const createQuestion = async (question: any): Promise<Response> => {
   const response = await fetch(
     `${import.meta.env.VITE_API_GATEWAY || "http://localhost:3000"}/questions`,
     {
@@ -8,11 +8,7 @@ const createQuestion = async (question: any) => {
       body: JSON.stringify(question),
     }
   );
-  const responseBody = response.json();
-  return [
-    responseBody,
-    response.ok ? null : Error((await responseBody).message),
-  ];
+  return response;
 };
 
 export default createQuestion;
