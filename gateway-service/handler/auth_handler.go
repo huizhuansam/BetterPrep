@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -67,7 +68,12 @@ func Signup(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 	}
-	return c.Status(fiber.StatusOK).JSON(token)
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = token
+	cookie.HTTPOnly = true
+	c.Cookie(cookie)
+	return c.SendStatus(fiber.StatusOK)
 }
 
 func Login(c *fiber.Ctx) error {
@@ -95,5 +101,47 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 	}
-	return c.Status(fiber.StatusOK).JSON(token)
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = token
+	cookie.HTTPOnly = true
+	c.Cookie(cookie)
+	return c.SendStatus(fiber.StatusOK)
+}
+
+func Logout(c *fiber.Ctx) error {
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = ""
+	cookie.HTTPOnly = true
+	c.Cookie(cookie)
+	return c.SendStatus(fiber.StatusOK)
+}
+
+func Me(c *fiber.Ctx) error {
+	tokenString := c.Cookies("token")
+	if len(tokenString) < 1 {
+		return c.JSON(fiber.Map{
+			"user": nil,
+		})
+	}
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		secret := configuration.JwtSecret
+		return []byte(secret), nil
+	})
+	if err != nil {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+	return c.JSON(fiber.Map{
+		"user": fiber.Map{
+			"username": claims["username"],
+		},
+	})
 }
