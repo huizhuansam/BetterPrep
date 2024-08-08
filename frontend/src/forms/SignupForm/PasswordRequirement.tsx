@@ -1,5 +1,5 @@
-import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { Box, rem, Text } from "@mantine/core";
+import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 
 const PasswordRequirement = ({
   meets,

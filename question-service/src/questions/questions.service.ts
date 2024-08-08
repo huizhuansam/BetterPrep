@@ -12,11 +12,11 @@ export class QuestionsService {
 
   async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
     const slug = createQuestionDto.title
-      .trim()
       .toLowerCase()
-      .split(/(\s+)/)
-      .filter((s) => !s.match(/(\s+)/))
-      .join('-');
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
     const createdQuestion = new this.questionModel({
       ...createQuestionDto,
       slug,

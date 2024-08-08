@@ -23,7 +23,6 @@ const AppRouter = () => {
     queryKey: ["me"],
     queryFn: async () => {
       const user = await me();
-      console.log(user);
       if (!user.user) {
         setLoggedInUser(null);
       } else {

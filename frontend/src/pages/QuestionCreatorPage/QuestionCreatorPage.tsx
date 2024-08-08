@@ -20,15 +20,16 @@ import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { serializeError } from "serialize-error";
 import validator from "validator";
 import createQuestion from "../../api/createQuestion";
 import DescriptionEditor from "./DescriptionEditor";
 
 const QuestionCreatorPage = () => {
+  // setup
   const navigateTo = useNavigate();
   const complexities = Object.freeze(["easy", "medium", "hard"]);
 
+  // state
   const [title, setTitle] = useState("");
   const [complexity, setComplexity] = useState("easy");
   const [categories, setCategories] = useState<string[]>([]);
@@ -48,8 +49,9 @@ const QuestionCreatorPage = () => {
       Placeholder.configure({ placeholder: "Question description" }),
     ],
   })!;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // user input validation logic
+  // validation
   const isFormValid =
     title.length > 0 &&
     descriptionEditor.storage.characterCount.characters() > 0 &&
@@ -61,7 +63,7 @@ const QuestionCreatorPage = () => {
     categories.length < 1 &&
     descriptionEditor.storage.characterCount.characters() < 1;
 
-  // form actions
+  // actions
   const handleDiscard = () => {
     setTitle("");
     setCategories([]);
@@ -70,6 +72,7 @@ const QuestionCreatorPage = () => {
   };
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     const preprocessedUserInput = {
       title: validator.trim(title),
       description: validator.trim(descriptionEditor.getHTML()),
@@ -78,10 +81,10 @@ const QuestionCreatorPage = () => {
         .filter((c) => !validator.isEmpty(c)),
       complexity,
     };
-    const [_, error] = await createQuestion(preprocessedUserInput);
-    if (error) {
+    const response = await createQuestion(preprocessedUserInput);
+    if (!response.ok) {
       notifications.show({
-        message: "Error: " + JSON.stringify(serializeError(error).message),
+        message: `Error: ${response.statusText}`,
         color: "red",
       });
       return;
@@ -89,46 +92,54 @@ const QuestionCreatorPage = () => {
     notifications.show({
       message: "Question submitted!",
     });
+    setIsSubmitting(false);
     navigateTo("/questions");
   };
 
   return (
-    <>
-      <Fieldset legend="Submit A Question">
-        <TextInput
-          value={title}
-          placeholder="Question title"
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <DescriptionEditor editor={descriptionEditor} />
-        <TagsInput
-          mt="md"
-          label="Categories"
-          placeholder={
-            'Press "Enter" to add a category, or delimit each category with commas (,)'
-          }
-          data={[]}
-          value={categories}
-          onChange={setCategories}
-          clearable
-        />
-        <NativeSelect
-          value={complexity}
-          label="Select suggested difficulty"
-          onChange={(e) => setComplexity(e.target.value)}
-          data={complexities}
-          mt="md"
-        />
-        <Group align="center" grow mt="md">
-          <Button color="green" disabled={!isFormValid} onClick={handleSubmit}>
-            Submit
-          </Button>
-          <Button color="orange" disabled={isFormEmpty} onClick={handleDiscard}>
-            Discard
-          </Button>
-        </Group>
-      </Fieldset>
-    </>
+    <Fieldset legend="Submit A Question">
+      <TextInput
+        value={title}
+        placeholder="Question title"
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <DescriptionEditor editor={descriptionEditor} />
+      <TagsInput
+        mt="md"
+        label="Categories"
+        placeholder={
+          'Press "Enter" to add a category, or delimit each category with commas (,)'
+        }
+        data={[]}
+        value={categories}
+        onChange={setCategories}
+        clearable
+      />
+      <NativeSelect
+        value={complexity}
+        label="Select suggested difficulty"
+        onChange={(e) => setComplexity(e.target.value)}
+        data={complexities}
+        mt="md"
+      />
+      <Group align="center" grow mt="md">
+        <Button
+          loading={isSubmitting}
+          color="green"
+          disabled={!isFormValid}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+        <Button
+          color="orange"
+          disabled={isFormEmpty || isSubmitting}
+          onClick={handleDiscard}
+        >
+          Discard
+        </Button>
+      </Group>
+    </Fieldset>
   );
 };
 

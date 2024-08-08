@@ -9,17 +9,26 @@ const QuestionPage = () => {
   const { slug } = useParams() as { slug: string };
   const findQuestionApiCall = useQuery({
     queryKey: ["questions", slug],
-    queryFn: async () => findQuestion({ slug }),
+    queryFn: async () => {
+      const question = await findQuestion(slug);
+      if (!question.ok) {
+        throw Error(question.status.toString());
+      }
+      return question.json();
+    },
     retry: false,
   });
-  if (findQuestionApiCall.status === "error") {
-    return <NotFoundPage />;
-  }
-  if (findQuestionApiCall.isLoading || !findQuestionApiCall.data) {
+
+  if (findQuestionApiCall.isLoading) {
     return (
       <LoadingOverlay visible={true} overlayProps={{ radius: "sm", blur: 2 }} />
     );
   }
+
+  if (findQuestionApiCall.error) {
+    return <NotFoundPage />;
+  }
+
   const { title, description, categories, complexity } =
     findQuestionApiCall.data;
   return (
