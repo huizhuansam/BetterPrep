@@ -7,6 +7,7 @@ import java.util.List;
 
 @Service
 public class ProfileService {
+
   @Autowired
   private ProfileRepository profileRepository;
 
@@ -17,4 +18,5 @@ public class ProfileService {
   public Profile addProfile(Profile profile) {
     return profileRepository.save(profile);
   }
+
 }

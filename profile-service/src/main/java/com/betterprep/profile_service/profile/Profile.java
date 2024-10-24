@@ -21,7 +21,7 @@ public class Profile {
   }
 
   public String getUsername() {
-    return username;
+    return this.username;
   }
 
   public void setUsername(String username) {
@@ -29,7 +29,7 @@ public class Profile {
   }
 
   public String getEmail() {
-    return email;
+    return this.email;
   }
 
   public void setEmail(String email) {
